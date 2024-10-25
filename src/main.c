@@ -39,6 +39,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
                 50, 100, 200, 30,
                 hwnd, (HMENU) 1, NULL, NULL);
+            CreateWindow(
+                "BUTTON", "CLEAR",
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+                50, 150, 200, 30,
+                hwnd, (HMENU) 2, NULL, NULL);
             hLabel = CreateWindow(
                 "STATIC", "Premi il pulsante per un santo casuale",
                 WS_VISIBLE | WS_CHILD | SS_CENTER,
@@ -47,18 +52,22 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             break;
 
         case WM_COMMAND:
-            if (LOWORD(wParam) == 1) {
-                srand(time(NULL));  // Usa il tempo attuale come seed per rand()
-                for (int i = 0; i < 5; i++) { // Migliora la casualità con più chiamate a rand()
-                    rand();
-                    printf("%d:%d\n", i, rand());
-                }
-                int randomIndex = rand() % count; // Genera l'indice casuale dei nomi
-                printf("%d", randomIndex);
+            
+            long long unsigned int param;
+            param = LOWORD(wParam);
+
+            if (param == 1) 
+            {
+                int randomIndex = rand() % count;
+                printf("%d\n", randomIndex);
                 SetWindowText(hLabel, nomi[randomIndex]);
             }
+            else if (param == 2)
+            {
+                SetWindowText(hLabel, "");
+            }
             break;
-
+        
         case WM_DESTROY:
             PostQuitMessage(0);
             return 0;
@@ -87,7 +96,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         CLASS_NAME,
         "Porconatore v2.0",
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, 300, 200,
+        CW_USEDEFAULT, CW_USEDEFAULT, 300, 300,
         NULL, NULL, hInstance, NULL
     );
 
