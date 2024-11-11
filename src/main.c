@@ -16,7 +16,7 @@ void carica_nomi() {
         exit(1);
     }
 
-    while (fgets(nomi[count], MAX_LUNGHEZZA, file) != NULL && count < MAX_NOMI) {
+    while (count < MAX_NOMI && fgets(nomi[count], MAX_LUNGHEZZA, file) != NULL) {
         nomi[count][strcspn(nomi[count], "\n")] = '\0';
         count++;
     }
@@ -79,6 +79,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    srand(time(NULL));
     carica_nomi();
 
     const char CLASS_NAME[] = "Sample Window Class";
@@ -114,3 +115,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     return 0;
 }
+
