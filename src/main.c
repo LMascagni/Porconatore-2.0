@@ -1,33 +1,15 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
+#include <string.h>
+#include "lib/stdsaint.h"
 
 #define MAX_NOMI 400
 #define MAX_LUNGHEZZA 50
 
-char nomi[MAX_NOMI][MAX_LUNGHEZZA];
-int count = 0;
-
-void carica_nomi() {
-    FILE *file = fopen("../data/nomi.txt", "r");
-    if (file == NULL) {
-        MessageBox(NULL, "Errore nell'apertura del file.", "Errore", MB_OK);
-        exit(1);
-    }
-
-    while (count < MAX_NOMI && fgets(nomi[count], MAX_LUNGHEZZA, file) != NULL) {
-        nomi[count][strcspn(nomi[count], "\n")] = '\0';
-        count++;
-    }
-
-    fclose(file);
-
-    if (count == 0) {
-        MessageBox(NULL, "Il file è vuoto.", "Errore", MB_OK);
-        exit(1);
-    }
-}
+santo santi[MAX_MONTHS][MAX_DAYS];
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     static HWND hLabel;
@@ -58,9 +40,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
             if (param == 1) 
             {
-                int randomIndex = rand() % count;
-                printf("%d\n", randomIndex);
-                SetWindowText(hLabel, nomi[randomIndex]);
+                int month = rand() % 12 + 1;
+                int day = rand() % 31 + 1;
+                char santo[MAX_LUNGHEZZA];
+                strcpy(santo, getSanto(santi, month, day));
+                char buffer[MAX_LUNGHEZZA + 50];
+                sprintf(buffer, "Santo del %d/%d: %s", day, month, santo);
+                SetWindowText(hLabel, buffer);
             }
             else if (param == 2)
             {
@@ -80,7 +66,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     srand(time(NULL));
-    carica_nomi();
+
+    //inizializza la matrice dei santi
+    initSaints(santi);
+
+    //carica i santi da file
+    parseAndStoreSaints("..\\grt\\santi.txt", santi);
+
+    //stampa tutti i santi
+#ifdef DEBUG
+    printAllSaints(santi);
+#endif
 
     const char CLASS_NAME[] = "Sample Window Class";
 
