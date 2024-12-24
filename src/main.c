@@ -5,82 +5,144 @@
 #include <time.h>
 #include <string.h>
 #include "lib/stdsaint.h"
-
-//#define MAX_NOMI 400
-#define MAX_LUNGHEZZA 50
-#define WINDOW_WIDTH  300
-#define WINDOW_HEIGHT 300
+#include "lib/constants.h"
 
 santo santi[MAX_MONTHS][MAX_DAYS];
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
     static HWND hLabel;
+    static HWND hButtonRandomSaint;
+    static HWND hButtonClear;
 
-    switch (uMsg) {
-        case WM_CREATE:
-            CreateWindow(
-                "BUTTON", "Santo random",
-                WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-                50, 100, 200, 30,
-                hwnd, (HMENU) 1, NULL, NULL);
-            CreateWindow(
-                "BUTTON", "CLEAR",
-                WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-                50, 150, 200, 30,
-                hwnd, (HMENU) 2, NULL, NULL);
-            hLabel = CreateWindow(
-                "STATIC", "Premi il pulsante per un santo casuale",
-                WS_VISIBLE | WS_CHILD | SS_CENTER,
-                50, 50, 200, 30,
-                hwnd, NULL, NULL, NULL);
-            break;
+    switch (uMsg)
+    {
+    case WM_CREATE:
+    {
+        // Menu a tendina per le opzioni
+        HMENU hMenu = CreateMenu();
+        HMENU hSubMenu = CreatePopupMenu();
 
-        case WM_COMMAND:
-            
-            long long unsigned int param;
-            param = LOWORD(wParam);
+        AppendMenu(hSubMenu, MF_STRING, ID_MENU_RANDOM_SAINT, STRING_MENU_RANDOM_SAINT);
+        AppendMenu(hSubMenu, MF_STRING, ID_MENU_SAINT_OF_THE_DAY, STRING_MENU_SAINT_OF_THE_DAY);
+        AppendMenu(hSubMenu, MF_SEPARATOR, 0, NULL);
+        AppendMenu(hSubMenu, MF_STRING, ID_MENU_EXIT, "Esci");
+        AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenu, "Opzioni");
 
-            if (param == 1) 
-            {
-                int month = rand() % 12 + 1;
-                int day = rand() % 31 + 1;
-                char santo[MAX_LUNGHEZZA];
-                strcpy(santo, getSanto(santi, month, day));
-                char buffer[MAX_LUNGHEZZA + 50];
-                sprintf(buffer, "Santo del %d/%d: %s", day, month, santo);
-                SetWindowText(hLabel, buffer);
-            }
-            else if (param == 2)
-            {
-                SetWindowText(hLabel, "Premi il pulsante per un santo casuale");
-            }
-            break;
-        
-        case WM_DESTROY:
+        SetMenu(hwnd, hMenu);
+
+        hLabel = CreateWindow(
+            "STATIC", STRING_SANTO_RANDOM_LABEL,
+            WS_VISIBLE | WS_CHILD | SS_CENTER,
+            0, 0, 0, 0,
+            hwnd, NULL, NULL, NULL);
+
+        hButtonRandomSaint = CreateWindow(
+            "BUTTON", STRING_BUTTON_RANDOM_SAINT,
+            WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+            0, 0, 0, 0,
+            hwnd, (HMENU)ID_BUTTON_RANDOM_SAINT, NULL, NULL);
+
+        hButtonClear = CreateWindow(
+            "BUTTON", STRING_BUTTON_CLEAR,
+            WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+            0, 0, 0, 0,
+            hwnd, (HMENU)ID_BUTTON_CLEAR, NULL, NULL);
+        break;
+    }
+
+    case WM_SIZE:
+    {
+        RECT rect;
+        GetClientRect(hwnd, &rect);
+
+        int width = rect.right - rect.left;
+        int height = rect.bottom - rect.top;
+
+        int labelHeight = height / 10;
+        int buttonWidth = width / 2;
+        int buttonHeight = height / 10;
+        int buttonY = height / 2 - buttonHeight / 2;
+
+        // Leggi il testo corrente del label
+        char labelText[256];
+        GetWindowText(hLabel, labelText, sizeof(labelText));
+
+        // Ridisegna il label con le nuove dimensioni
+        SetWindowPos(hLabel, NULL, 0, 0, width, labelHeight, SWP_NOZORDER);
+
+        // Reimposta il testo letto nel label
+        SetWindowText(hLabel, labelText);
+
+        SetWindowPos(hButtonRandomSaint, NULL, width / 4, buttonY, buttonWidth, buttonHeight, SWP_NOZORDER);
+        SetWindowPos(hButtonClear, NULL, width / 4, buttonY + buttonHeight + 10, buttonWidth, buttonHeight, SWP_NOZORDER);
+        break;
+    }
+
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case ID_MENU_EXIT:
             PostQuitMessage(0);
-            return 0;
+            break;
+
+        case ID_MENU_RANDOM_SAINT:
+            // Menu a tendina
+            break;
+
+        case ID_MENU_SAINT_OF_THE_DAY:
+            break;
+
+        case ID_BUTTON_RANDOM_SAINT:
+            SetWindowText(hLabel, getRandomSaint(santi));
+            break;
+
+        case ID_BUTTON_CLEAR:
+            SetWindowText(hLabel, STRING_SANTO_RANDOM_LABEL);
+            break;
 
         default:
-            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+            break;
+        }
+        break;
+
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hwnd, &ps);
+        FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+        EndPaint(hwnd, &ps);
+    }
+    break;
+
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
     return 0;
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+    int result;
+
     srand(time(NULL));
 
-    //inizializza la matrice dei santi
+    // inizializza la matrice dei santi
     initSaints(santi);
 
-    //carica i santi da file
-    if(parseAndStoreSaints("data\\santi.txt", santi) < 0)
+    // carica i santi da file
+    if ((result = parseAndStoreSaints("data\\santi.txt", santi)) != EXIT_SUCCESS)
     {
-        fprintf(stderr, "Errore durante il caricamento dei santi.\n");
+        fprintf(stderr, "Errore durante il caricamento dei santi. Codice errore: %d\n", result);
         exit(EXIT_FAILURE);
     }
 
-    //stampa tutti i santi
-#ifdef DEBUG
+    // stampa tutti i santi
+#ifdef DEBUG_SAINTS_PARSING
     printAllSaints(santi);
 #endif
 
@@ -94,16 +156,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     HWND hwnd = CreateWindowEx(
         0,
         "MyWindowClass",
-        "Porconatore v2.0",
-        WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX,
-        CW_USEDEFAULT, CW_USEDEFAULT, WINDOW_WIDTH, WINDOW_HEIGHT,
+        STRING_WINDOW_TITLE,
+        WS_OVERLAPPEDWINDOW, //per rendere le dimensioni fisse & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX,
+        CW_USEDEFAULT, CW_USEDEFAULT, START_WINDOW_WIDTH, START_WINDOW_HEIGHT,
         NULL,
         NULL,
         hInstance,
-        NULL
-    );
+        NULL);
 
-    if (hwnd == NULL) {
+    if (hwnd == NULL)
+    {
         fprintf(stderr, "Errore durante la creazione della finestra.\n");
         exit(EXIT_FAILURE);
     }
@@ -111,7 +173,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ShowWindow(hwnd, nCmdShow);
 
     MSG msg = {0};
-    while (GetMessage(&msg, NULL, 0, 0)) {
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }

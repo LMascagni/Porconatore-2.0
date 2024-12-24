@@ -15,7 +15,7 @@ int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS])
     {
         //TODO: da modificare
         //perror("Unable to open file");
-        return -1;
+        return ERROR_SAINT_FILE_NOT_FOUND;
     }
 
     char line[512]; // Memory section for storing the read line
@@ -79,10 +79,10 @@ int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS])
     if (counter >= MAX_ITER)
     {
         printf("An error occurred while parsing: reached maximum iterations.\n");
-        return -2;
+        return ERROR_MEMORY_ALLOCATION;
     }
     fclose(file);
-    return 1;
+    return EXIT_SUCCESS;
 }
 
 int initSaints(santo santi[MAX_MONTHS][MAX_DAYS])
@@ -128,4 +128,11 @@ const char *getSanto(santo santi[MAX_MONTHS][MAX_DAYS], int mese, int giorno)
     }
 
     return santi[mese - 1][giorno - 1].nome;
+}
+
+const char *getRandomSaint(santo santi[MAX_MONTHS][MAX_DAYS])
+{
+    int month = rand() % MAX_MONTHS;
+    int day = rand() % daysInMonth[month + 1];
+    return santi[month][day].nome;
 }
