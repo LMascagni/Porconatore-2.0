@@ -6,8 +6,10 @@
 #include <string.h>
 #include "lib/stdsaint.h"
 
-#define MAX_NOMI 400
+//#define MAX_NOMI 400
 #define MAX_LUNGHEZZA 50
+#define WINDOW_WIDTH  300
+#define WINDOW_HEIGHT 300
 
 santo santi[MAX_MONTHS][MAX_DAYS];
 
@@ -50,7 +52,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             }
             else if (param == 2)
             {
-                SetWindowText(hLabel, "");
+                SetWindowText(hLabel, "Premi il pulsante per un santo casuale");
             }
             break;
         
@@ -71,39 +73,44 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     initSaints(santi);
 
     //carica i santi da file
-    parseAndStoreSaints("..\\grt\\santi.txt", santi);
+    if(parseAndStoreSaints("data\\santi.txt", santi) < 0)
+    {
+        fprintf(stderr, "Errore durante il caricamento dei santi.\n");
+        exit(EXIT_FAILURE);
+    }
 
     //stampa tutti i santi
 #ifdef DEBUG
     printAllSaints(santi);
 #endif
 
-    const char CLASS_NAME[] = "Sample Window Class";
-
-    WNDCLASS wc = { };
-
+    WNDCLASS wc = {0};
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
-    wc.lpszClassName = CLASS_NAME;
+    wc.lpszClassName = "MyWindowClass";
 
     RegisterClass(&wc);
 
     HWND hwnd = CreateWindowEx(
         0,
-        CLASS_NAME,
+        "MyWindowClass",
         "Porconatore v2.0",
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, 300, 300,
-        NULL, NULL, hInstance, NULL
+        WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX,
+        CW_USEDEFAULT, CW_USEDEFAULT, WINDOW_WIDTH, WINDOW_HEIGHT,
+        NULL,
+        NULL,
+        hInstance,
+        NULL
     );
 
     if (hwnd == NULL) {
-        return 0;
+        fprintf(stderr, "Errore durante la creazione della finestra.\n");
+        exit(EXIT_FAILURE);
     }
 
     ShowWindow(hwnd, nCmdShow);
 
-    MSG msg = { };
+    MSG msg = {0};
     while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -111,4 +118,3 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     return 0;
 }
-

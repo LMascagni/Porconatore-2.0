@@ -13,7 +13,8 @@ int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS])
     FILE *file = fopen(filename, "r");
     if (!file)
     {
-        perror("Unable to open file");
+        //TODO: da modificare
+        //perror("Unable to open file");
         return -1;
     }
 
