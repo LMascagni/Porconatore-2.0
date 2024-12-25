@@ -26,6 +26,10 @@
 // definizione del label
 #define STRING_RANDOM_SAINT_LABEL "Premi il pulsante per un santo casuale"
 #define STRING_SAINT_OF_THE_DAY_LABEL "Premi il pulsante per il santo del giorno"
+// definizioni dei messaggi nelle finestre di dialogo
+#define STRING_MSG_BOX_EXIT_TITLE "Uscita"
+#define STRING_MSGBOX_EXIT_MESSAGE "Sei sicuro di voler uscire?"
+
 
 // definizioni per gli ID dei pulsanti
 // definizioni per i menu a tendina

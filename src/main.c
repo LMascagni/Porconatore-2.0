@@ -151,7 +151,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         switch (LOWORD(wParam))
         {
         case ID_MENU_EXIT:
-            if (MessageBox(hwnd, "Sei sicuro di voler uscire?", "Uscita", MB_YESNO | MB_ICONQUESTION) == IDYES)
+            if (MessageBox(hwnd, STRING_MSGBOX_EXIT_MESSAGE, STRING_MSG_BOX_EXIT_TITLE, MB_YESNO | MB_ICONQUESTION) == IDYES)
                 PostQuitMessage(0);
             break;
 
