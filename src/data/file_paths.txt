@@ -1,0 +1,3 @@
+STRING_RESOURCES=data/string_resources.txt
+NUMERIC_RESOURCES=data/numeric_resources.txt
+SAINTS_FILE=data/santi.txt
