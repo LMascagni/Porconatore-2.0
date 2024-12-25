@@ -26,7 +26,8 @@ typedef struct {
 int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS]);
 int initSaints(santo santi[MAX_MONTHS][MAX_DAYS]);
 void printAllSaints(santo santi[MAX_MONTHS][MAX_DAYS]);
-const char *getSanto(santo santi[MAX_MONTHS][MAX_DAYS], int mese, int giorno);
+const char *getSaint(santo santi[MAX_MONTHS][MAX_DAYS], int mese, int giorno);
+const char *getTodaySaint(santo santi[MAX_MONTHS][MAX_DAYS]);
 const char *getRandomSaint(santo santi[MAX_MONTHS][MAX_DAYS]);
 
 #endif // STDSAINT_H

@@ -113,7 +113,7 @@ void printAllSaints(santo santi[MAX_MONTHS][MAX_DAYS])
     }
 }
 
-const char *getSanto(santo santi[MAX_MONTHS][MAX_DAYS], int mese, int giorno)
+const char *getSaint(santo santi[MAX_MONTHS][MAX_DAYS], int mese, int giorno)
 {
     // Check month validity
     if (mese < 1 || mese > MAX_MONTHS)
@@ -128,6 +128,13 @@ const char *getSanto(santo santi[MAX_MONTHS][MAX_DAYS], int mese, int giorno)
     }
 
     return santi[mese - 1][giorno - 1].nome;
+}
+
+const char *getTodaySaint(santo santi[MAX_MONTHS][MAX_DAYS])
+{
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    return getSaint(santi, tm.tm_mon + 1, tm.tm_mday);
 }
 
 const char *getRandomSaint(santo santi[MAX_MONTHS][MAX_DAYS])
