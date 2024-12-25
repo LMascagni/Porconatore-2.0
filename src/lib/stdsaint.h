@@ -7,7 +7,7 @@
 //parametri di configurazione
 #define MAX_MONTHS 12
 #define MAX_DAYS 31
-#define MAX_LUNGHEZZA 50
+#define MAX_LEN 50
 #define MAX_ITER 400
 
 //definizione costanti
@@ -18,8 +18,12 @@
 #define ERROR_SAINT_FILE_NOT_FOUND -1
 #define ERROR_MEMORY_ALLOCATION -2
 
+// definizioni messaggi di errore
+#define STRING_ERROR_DATE_FORMAT "Formato data non valido. Inserisci la data nel formato gg/mm"
+
+
 typedef struct {
-    char nome[MAX_LUNGHEZZA];
+    char nome[MAX_LEN];
     bool sesso;
 } santo;
 

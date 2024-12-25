@@ -10,6 +10,10 @@ int daysInMonth[] = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS])
 {
+#ifdef DEBUG
+    printf("Parsing file: %s\n", filename);
+#endif
+
     FILE *file = fopen(filename, "r");
     if (!file)
     {
@@ -17,6 +21,9 @@ int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS])
         //perror("Unable to open file");
         return ERROR_SAINT_FILE_NOT_FOUND;
     }
+#ifdef DEBUG
+    printf("\tFile opened successfully\n");
+#endif
 
     char line[512]; // Memory section for storing the read line
     char name[100]; // Memory section for storing the read name
@@ -76,6 +83,8 @@ int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS])
         }
     }
 
+
+
     if (counter >= MAX_ITER)
     {
         printf("An error occurred while parsing: reached maximum iterations.\n");
@@ -118,13 +127,13 @@ const char *getSaint(santo santi[MAX_MONTHS][MAX_DAYS], int mese, int giorno)
     // Check month validity
     if (mese < 1 || mese > MAX_MONTHS)
     {
-        return "Il mese inserito non e' valido.";
+        return STRING_ERROR_DATE_FORMAT;
     }
 
     // Check day validity
     if (giorno < 1 || giorno > daysInMonth[mese])
     {
-        return "Il giorno inserito non e' valido";
+        return STRING_ERROR_DATE_FORMAT;
     }
 
     return santi[mese - 1][giorno - 1].nome;
