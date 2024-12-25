@@ -3,7 +3,11 @@
 
 #include <windows.h>
 
-// definizioni per gli ID dei pulsanti
+// definizioni per gli ID
+// definizioni per le icone
+#define IDI_APP_ICON 1001
+#define IDI_WINDOW_ICON 1002
+
 // definizioni per i menu a tendina
 #define ID_MENU_RANDOM_SAINT 1
 #define ID_MENU_SAINT_OF_THE_DAY 2

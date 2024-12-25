@@ -40,7 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     initSaints(santi);
 
     // carica i santi da file
-    if ((result = parseAndStoreSaints("data\\santi.txt", santi)) != EXIT_SUCCESS)
+    if ((result = parseAndStoreSaints(GetFilePath("SAINTS_FILE"), santi)) != EXIT_SUCCESS)
     {
         fprintf(stderr, "Errore durante il caricamento dei santi. Codice errore: %d\n", result);
         exit(EXIT_FAILURE);
@@ -55,7 +55,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = "MyWindowClass";
-
     RegisterClass(&wc);
 
     HWND hwnd = CreateWindowEx(
