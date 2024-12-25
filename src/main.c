@@ -9,6 +9,9 @@
 #include "lib/resource_manager.h"
 #include "lib/file_manager.h"
 
+// percorso del file dei percorsi
+#define FILE_PATHS "data\\file_paths.txt"
+
 santo santi[MAX_MONTHS][MAX_DAYS];
 
 // prototipi delle funzioni
@@ -23,7 +26,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     srand(time(NULL));
 
     // carica i percorsi dei file
-    LoadFilePaths("data\\file_paths.txt");
+    LoadFilePaths(FILE_PATHS);
 
     // carica le risorse
     LoadResources(filePaths, filePathCount);
