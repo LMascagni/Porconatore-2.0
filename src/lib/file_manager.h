@@ -9,8 +9,8 @@ typedef struct {
     char value[MAX_PATH_LENGTH];
 } FilePath;
 
-static FilePath filePaths[MAX_FILE_PATHS];
-static int filePathCount = 0;
+extern FilePath filePaths[MAX_FILE_PATHS];
+extern int filePathCount;
 
 void LoadFilePaths(const char *filePath);
 const char* GetFilePath(const char *key);

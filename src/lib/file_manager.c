@@ -3,6 +3,9 @@
 #include <string.h>
 #include "file_manager.h"
 
+FilePath filePaths[MAX_FILE_PATHS];
+int filePathCount = 0;
+
 void LoadFilePaths(const char *filePath)
 {
     FILE *file = fopen(filePath, "r");
