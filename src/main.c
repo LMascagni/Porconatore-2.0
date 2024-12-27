@@ -21,6 +21,7 @@ void InitializeWindowControls();
 void InitializeResources();
 HWND CreateMainWindow(HINSTANCE hInstance, int nCmdShow);
 void HandleCommand(WPARAM wParam, HWND hwnd);
+void SetControlsVisibility(int *controlsToShow, int showCount, int *controlsToHide, int hideCount);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -254,53 +255,41 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
         break;
 
     case ID_MENU_RANDOM_SAINT:
+    {
         // Mostra i controlli per il santo random
-        controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].visible = TRUE;
-        controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].visible = TRUE;
-
+        int controlsToShow[] = {CONTROL_BUTTON_RANDOM_SAINT_GENERATE, CONTROL_BUTTON_RANDOM_SAINT_CLEAR};
         // Nasconde gli altri controlli
-        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].visible = FALSE;
-        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].visible = FALSE;
-        controls[CONTROL_EDIT_INSERT_DATE].visible = FALSE;
-        controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].visible = FALSE;
+        int controlsToHide[] = {CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE, CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR, CONTROL_EDIT_INSERT_DATE, CONTROL_BUTTON_INSERT_DATE_CLEAR};
 
-        // Aggiorna l'interfaccia
-        UpdateControlVisibility(controls, CONTROL_COUNT);
+        SetControlsVisibility(controlsToShow, sizeof(controlsToShow) / sizeof(controlsToShow[0]), controlsToHide, sizeof(controlsToHide) / sizeof(controlsToHide[0]));
+
         SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_RANDOM_SAINT_LABEL"));
         break;
-
+    }
     case ID_MENU_SAINT_OF_THE_DAY:
+    {
         // Mostra i controlli per il santo del giorno
-        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].visible = TRUE;
-        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].visible = TRUE;
-
+        int controlsToShow[] = {CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE, CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR};
         // Nasconde gli altri controlli
-        controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].visible = FALSE;
-        controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].visible = FALSE;
-        controls[CONTROL_EDIT_INSERT_DATE].visible = FALSE;
-        controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].visible = FALSE;
+        int controlsToHide[] = {CONTROL_BUTTON_RANDOM_SAINT_GENERATE, CONTROL_BUTTON_RANDOM_SAINT_CLEAR, CONTROL_EDIT_INSERT_DATE, CONTROL_BUTTON_INSERT_DATE_CLEAR};
 
-        // Aggiorna l'interfaccia
-        UpdateControlVisibility(controls, CONTROL_COUNT);
+        SetControlsVisibility(controlsToShow, sizeof(controlsToShow) / sizeof(controlsToShow[0]), controlsToHide, sizeof(controlsToHide) / sizeof(controlsToHide[0]));
+
         SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_SAINT_OF_THE_DAY_LABEL"));
         break;
-
+    }
     case ID_MENU_INSERT_DATA:
+    {
         // Mostra i controlli per l'inserimento della data
-        controls[CONTROL_EDIT_INSERT_DATE].visible = TRUE;
-        controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].visible = TRUE;
-
+        int controlsToShow[] = {CONTROL_EDIT_INSERT_DATE, CONTROL_BUTTON_INSERT_DATE_CLEAR};
         // Nasconde gli altri controlli
-        controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].visible = FALSE;
-        controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].visible = FALSE;
-        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].visible = FALSE;
-        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].visible = FALSE;
+        int controlsToHide[] = {CONTROL_BUTTON_RANDOM_SAINT_GENERATE, CONTROL_BUTTON_RANDOM_SAINT_CLEAR, CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE, CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR};
 
-        // Aggiorna l'interfaccia
-        UpdateControlVisibility(controls, CONTROL_COUNT);
+        SetControlsVisibility(controlsToShow, sizeof(controlsToShow) / sizeof(controlsToShow[0]), controlsToHide, sizeof(controlsToHide) / sizeof(controlsToHide[0]));
+
         SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
         break;
-
+    }
     case ID_BUTTON_RANDOM_SAINT_GENERATE:
         SetWindowText(controls[CONTROL_LABEL].hwnd, getRandomBestemms());
         break;
@@ -398,4 +387,20 @@ void InitializeWindowControls()
     controls[CONTROL_BUTTON_INSERT_DATE_CLEAR] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_INSERT_DATE_CLEAR"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_INSERT_DATE_CLEAR, FALSE};
 
     // Aggiungi altri controlli qui
+}
+
+void SetControlsVisibility(int *controlsToShow, int showCount, int *controlsToHide, int hideCount)
+{
+    for (int i = 0; i < showCount; i++)
+    {
+        controls[controlsToShow[i]].visible = TRUE;
+    }
+
+    for (int i = 0; i < hideCount; i++)
+    {
+        controls[controlsToHide[i]].visible = FALSE;
+    }
+
+    // Aggiorna l'interfaccia
+    UpdateControlVisibility(controls, CONTROL_COUNT);
 }
