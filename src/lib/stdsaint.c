@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <string.h>
+#include <ctype.h>
 #include "stdsaint.h"
 #include "error_messages.h"
 

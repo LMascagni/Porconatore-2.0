@@ -35,4 +35,6 @@ const char *getBestemmsByDate(int month, int day);
 bestemmia getRandomTerm(int type, int gender);
 const char *buildSimpleBestemms(santo saint);
 
+int isVowel(char c);
+
 #endif // STDBESTEMMIETOR_H

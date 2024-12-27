@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 #include "stdbestemms.h"
 #include "stdsaint.h"
 #include "file_manager.h"
@@ -217,20 +218,39 @@ const char *getBestemmsByDate(int month, int day)
 
 const char *buildSimpleBestemms(santo saint)
 {
+    char name[MAX_LEN];
+
     //cerca un prefisso e un suffisso con lo stesso genere del santo
     bestemmia prefix = getRandomTerm(PREFIX, saint.gender);
     bestemmia suffix = getRandomTerm(SUFFIX, saint.gender);
+
+    //aggiungi San, Santa, Sant' in base al genere del santo
+    if (isVowel(saint.name[0]))
+    {
+        sprintf(name, "Sant'%s", saint.name);
+    }
+    else
+    {
+        if(saint.gender == M)
+        {
+            sprintf(name, "San %s", saint.name);
+        }
+        else
+        {
+            sprintf(name, "Santa %s", saint.name);
+        }
+    }
 
     static char bestemmia[MAX_LEN];
 
     //se il suffisso è .EXE, non metter gli spazi
     if (strcmp(suffix.bestemmia, ".EXE") == 0)
     {
-        sprintf(bestemmia, "%s.%s%s", prefix.bestemmia, saint.name, suffix.bestemmia);
+        sprintf(bestemmia, "%s.%s%s", prefix.bestemmia, name, suffix.bestemmia);
     }
     else
     {
-        sprintf(bestemmia, "%s %s %s", prefix.bestemmia, saint.name, suffix.bestemmia);
+        sprintf(bestemmia, "%s %s %s", prefix.bestemmia, name, suffix.bestemmia);
     }
 #ifdef DEBUG_BESTEMMS
     printf("Bestemmia generata: %s\n", bestemmia);
@@ -248,4 +268,10 @@ bestemmia getRandomTerm(int type, int gender)
     }
 
     return bestemmie[type][term];
+}
+
+int isVowel(char c)
+{
+    c = tolower(c);
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
 }
