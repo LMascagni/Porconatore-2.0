@@ -233,8 +233,15 @@ const char *buildSimpleBestemms(santo saint)
 
     static char bestemmia[MAX_LEN];
 
-    sprintf(bestemmia, "%s %s %s", prefix.bestemmia, saint.name, suffix.bestemmia);
-
+    //se il suffisso è .EXE, non metter gli spazi
+    if (strcmp(suffix.bestemmia, ".EXE") == 0)
+    {
+        sprintf(bestemmia, "%s.%s%s", prefix.bestemmia, saint.name, suffix.bestemmia);
+    }
+    else
+    {
+        sprintf(bestemmia, "%s %s %s", prefix.bestemmia, saint.name, suffix.bestemmia);
+    }
 #ifdef DEBUG_BESTEMMS
     printf("Bestemmia generata: %s\n", bestemmia);
 #endif
