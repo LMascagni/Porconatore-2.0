@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <time.h>
 #include <string.h>
+
+#include "lib/stdbestemms.h"
 #include "lib/stdsaint.h"
 #include "lib/controls.h"
 #include "lib/resource_manager.h"
@@ -12,35 +14,71 @@
 // percorso del file dei percorsi
 #define FILE_PATHS "data\\file_paths.txt"
 
-santo santi[MAX_MONTHS][MAX_DAYS];
-
 // prototipi delle funzioni
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-void getSaintByDate(WindowControl controls[CONTROL_COUNT], santo santi[MAX_MONTHS][MAX_DAYS]);
-void InitializeWindowControls(WindowControl controls[CONTROL_COUNT]);
+void getBestemmsByDateAux();
+void InitializeWindowControls();
+void InitializeResources();
+HWND CreateMainWindow(HINSTANCE hInstance, int nCmdShow);
+void HandleCommand(WPARAM wParam, HWND hwnd);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+    // inizializza le risorse
+    InitializeResources();
+
+    // crea la finestra principale
+    HWND hwnd = CreateMainWindow(hInstance, nCmdShow);
+    if (hwnd == NULL)
+    {
+        fprintf(stderr, "Errore durante la creazione della finestra.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // ciclo dei messaggi
+    MSG msg = {0};
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return 0;
+}
+
+void InitializeResources()
+{
     int result;
 
+    // inizializza il generatore di numeri casuali
     srand(time(NULL));
 
     // carica i percorsi dei file
     LoadFilePaths(FILE_PATHS);
 
+    // inizializza il Bestemms_Engine
+    result = intiBestemmsEngine();
+    if (result != EXIT_SUCCESS)
+    {
+        fprintf(stderr, "Errore durante l'inizializzazione del Bestemms Engine. Codice errore: %d\n", result);
+        exit(EXIT_FAILURE);
+    }
+
     // carica le risorse
     LoadResources(filePaths, filePathCount);
-    
+
 #ifdef DEBUG_RESOURCE_PARSING
     // stampa le risorse
     PrintResources();
 #endif
 
-    // inizializza la matrice dei santi
-    initSaints(santi);
+#ifdef DEBUG_FILE_PATHS
+    // stampa i percorsi dei file
+    printFilePaths();
+#endif
 
     // carica i santi da file
-    if ((result = parseAndStoreSaints(GetFilePath("SAINTS_FILE"), santi)) != EXIT_SUCCESS)
+    if ((result = parseAndStoreSaints(GetFilePath("SAINTS_FILE"))) != EXIT_SUCCESS)
     {
         fprintf(stderr, "Errore durante il caricamento dei santi. Codice errore: %d\n", result);
         exit(EXIT_FAILURE);
@@ -50,7 +88,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // stampa tutti i santi
     printAllSaints(santi);
 #endif
+}
 
+HWND CreateMainWindow(HINSTANCE hInstance, int nCmdShow)
+{
     WNDCLASS wc = {0};
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
@@ -68,37 +109,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         hInstance,
         NULL);
 
-    if (hwnd == NULL)
+    if (hwnd != NULL)
     {
-        fprintf(stderr, "Errore durante la creazione della finestra.\n");
-        exit(EXIT_FAILURE);
+        ShowWindow(hwnd, nCmdShow);
     }
 
-    ShowWindow(hwnd, nCmdShow);
-
-    MSG msg = {0};
-    while (GetMessage(&msg, NULL, 0, 0))
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-
-    return 0;
+    return hwnd;
 }
-
-WindowControl controls[CONTROL_COUNT];
-static int controlsInitialized = 0;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     // Inizializza i controlli se non sono stati inizializzati
-    // ringraziamo Enrico Maria Pavan per la dritta 
     if (!controlsInitialized)
     {
         InitializeWindowControls(controls);
         controlsInitialized = 1;
     }
-    
+
     switch (uMsg)
     {
     case WM_GETMINMAXINFO:
@@ -195,89 +222,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 
     case WM_COMMAND:
-        switch (LOWORD(wParam))
-        {
-        case ID_MENU_EXIT:
-            if (MessageBox(hwnd, GetResourceString("STRING_MSGBOX_EXIT_MESSAGE"), GetResourceString("STRING_MSG_BOX_EXIT_TITLE"), MB_YESNO | MB_ICONQUESTION) == IDYES)
-                PostQuitMessage(0);
-            break;
-
-        case ID_MENU_RANDOM_SAINT:
-            // Mostra i controlli per il santo random
-            controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].visible = TRUE;
-            controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].visible = TRUE;
-
-            // Nasconde gli altri controlli
-            controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].visible = FALSE;
-            controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].visible = FALSE;
-            controls[CONTROL_EDIT_INSERT_DATE].visible = FALSE;
-            controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].visible = FALSE;
-
-            // Aggiorna l'interfaccia
-            UpdateControlVisibility(controls, CONTROL_COUNT);
-            SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_RANDOM_SAINT_LABEL"));
-            break;
-
-        case ID_MENU_SAINT_OF_THE_DAY:
-            // Mostra i controlli per il santo del giorno
-            controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].visible = TRUE;
-            controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].visible = TRUE;
-
-            // Nasconde gli altri controlli
-            controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].visible = FALSE;
-            controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].visible = FALSE;
-            controls[CONTROL_EDIT_INSERT_DATE].visible = FALSE;
-            controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].visible = FALSE;
-
-            // Aggiorna l'interfaccia
-            UpdateControlVisibility(controls, CONTROL_COUNT);
-            SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_SAINT_OF_THE_DAY_LABEL"));
-            break;
-
-        case ID_MENU_INSERT_DATA:
-            // Mostra i controlli per l'inserimento della data
-            controls[CONTROL_EDIT_INSERT_DATE].visible = TRUE;
-            controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].visible = TRUE;
-
-            // Nasconde gli altri controlli
-            controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].visible = FALSE;
-            controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].visible = FALSE;
-            controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].visible = FALSE;
-            controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].visible = FALSE;
-
-            // Aggiorna l'interfaccia
-            UpdateControlVisibility(controls, CONTROL_COUNT);
-            SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
-            break;
-
-        case ID_BUTTON_RANDOM_SAINT_GENERATE:
-            SetWindowText(controls[CONTROL_LABEL].hwnd, getRandomSaint(santi));
-            break;
-
-        case ID_BUTTON_RANDOM_SAINT_CLEAR:
-            SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_RANDOM_SAINT_LABEL"));
-            break;
-
-        case ID_BUTTON_SAINT_OF_THE_DAY_GENERATE:
-            SetWindowText(controls[CONTROL_LABEL].hwnd, getTodaySaint(santi));
-            break;
-
-        case ID_BUTTON_SAINT_OF_THE_DAY_CLEAR:
-            SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_SAINT_OF_THE_DAY_LABEL"));
-            break;
-
-        case ID_EDIT_INSERT_DATE:
-            getSaintByDate(controls, santi);
-            break;
-
-        case ID_BUTTON_INSERT_DATE_CLEAR:
-            SetWindowText(controls[CONTROL_EDIT_INSERT_DATE].hwnd, GetResourceString("STRING_EDIT_INSERT_DATE"));
-            SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
-            break;
-
-        default:
-            break;
-        }
+        HandleCommand(wParam, hwnd);
         break;
 
     case WM_PAINT:
@@ -299,7 +244,94 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void getSaintByDate(WindowControl controls[CONTROL_COUNT], santo santi[MAX_MONTHS][MAX_DAYS])
+void HandleCommand(WPARAM wParam, HWND hwnd)
+{
+    switch (LOWORD(wParam))
+    {
+    case ID_MENU_EXIT:
+        if (MessageBox(hwnd, GetResourceString("STRING_MSGBOX_EXIT_MESSAGE"), GetResourceString("STRING_MSG_BOX_EXIT_TITLE"), MB_YESNO | MB_ICONQUESTION) == IDYES)
+            PostQuitMessage(0);
+        break;
+
+    case ID_MENU_RANDOM_SAINT:
+        // Mostra i controlli per il santo random
+        controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].visible = TRUE;
+        controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].visible = TRUE;
+
+        // Nasconde gli altri controlli
+        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].visible = FALSE;
+        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].visible = FALSE;
+        controls[CONTROL_EDIT_INSERT_DATE].visible = FALSE;
+        controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].visible = FALSE;
+
+        // Aggiorna l'interfaccia
+        UpdateControlVisibility(controls, CONTROL_COUNT);
+        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_RANDOM_SAINT_LABEL"));
+        break;
+
+    case ID_MENU_SAINT_OF_THE_DAY:
+        // Mostra i controlli per il santo del giorno
+        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].visible = TRUE;
+        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].visible = TRUE;
+
+        // Nasconde gli altri controlli
+        controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].visible = FALSE;
+        controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].visible = FALSE;
+        controls[CONTROL_EDIT_INSERT_DATE].visible = FALSE;
+        controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].visible = FALSE;
+
+        // Aggiorna l'interfaccia
+        UpdateControlVisibility(controls, CONTROL_COUNT);
+        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_SAINT_OF_THE_DAY_LABEL"));
+        break;
+
+    case ID_MENU_INSERT_DATA:
+        // Mostra i controlli per l'inserimento della data
+        controls[CONTROL_EDIT_INSERT_DATE].visible = TRUE;
+        controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].visible = TRUE;
+
+        // Nasconde gli altri controlli
+        controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].visible = FALSE;
+        controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].visible = FALSE;
+        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].visible = FALSE;
+        controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].visible = FALSE;
+
+        // Aggiorna l'interfaccia
+        UpdateControlVisibility(controls, CONTROL_COUNT);
+        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
+        break;
+
+    case ID_BUTTON_RANDOM_SAINT_GENERATE:
+        SetWindowText(controls[CONTROL_LABEL].hwnd, getRandomBestemms());
+        break;
+
+    case ID_BUTTON_RANDOM_SAINT_CLEAR:
+        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_RANDOM_SAINT_LABEL"));
+        break;
+
+    case ID_BUTTON_SAINT_OF_THE_DAY_GENERATE:
+        SetWindowText(controls[CONTROL_LABEL].hwnd, getTodayBestemms());
+        break;
+
+    case ID_BUTTON_SAINT_OF_THE_DAY_CLEAR:
+        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_SAINT_OF_THE_DAY_LABEL"));
+        break;
+
+    case ID_EDIT_INSERT_DATE:
+        getBestemmsByDateAux();
+        break;
+
+    case ID_BUTTON_INSERT_DATE_CLEAR:
+        SetWindowText(controls[CONTROL_EDIT_INSERT_DATE].hwnd, GetResourceString("STRING_EDIT_INSERT_DATE"));
+        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
+        break;
+
+    default:
+        break;
+    }
+}
+
+void getBestemmsByDateAux()
 {
     // Get the length of the text
     int length = GetWindowTextLength(controls[CONTROL_EDIT_INSERT_DATE].hwnd);
@@ -314,7 +346,7 @@ void getSaintByDate(WindowControl controls[CONTROL_COUNT], santo santi[MAX_MONTH
     printf("Testo inserito: >%s<\n", buffer);
 #endif
 
-    //se il testo è uguale a STRING_EDIT_INSERT_DATE, cancella il testo
+    // se il testo è uguale a STRING_EDIT_INSERT_DATE, cancella il testo
     if (strcmp(buffer, GetResourceString("STRING_EDIT_INSERT_DATE")) == 0)
     {
         buffer[0] = '\0';
@@ -332,7 +364,7 @@ void getSaintByDate(WindowControl controls[CONTROL_COUNT], santo santi[MAX_MONTH
         token = strtok(NULL, "/");
         int month = atoi(token);
         // Get the saint
-        const char *saint = getSaint(santi, month, day);
+        const char *saint = getBestemmsByDate(month, day);
 
         // Set the text of the label
         SetWindowText(controls[CONTROL_LABEL].hwnd, saint);
@@ -349,7 +381,7 @@ void getSaintByDate(WindowControl controls[CONTROL_COUNT], santo santi[MAX_MONTH
 }
 
 // Funzione per inizializzare i controlli
-void InitializeWindowControls(WindowControl controls[CONTROL_COUNT])
+void InitializeWindowControls()
 {
     // Definizione dei controlli
     // Nome della classe, testo, stile, posizione e dimensioni, ID, visibilità
@@ -365,5 +397,5 @@ void InitializeWindowControls(WindowControl controls[CONTROL_COUNT])
     controls[CONTROL_EDIT_INSERT_DATE] = (WindowControl){NULL, "EDIT", GetResourceString("STRING_EDIT_INSERT_DATE"), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL, 0, 0, 0, 0, (HMENU)ID_EDIT_INSERT_DATE, FALSE};
     controls[CONTROL_BUTTON_INSERT_DATE_CLEAR] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_INSERT_DATE_CLEAR"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_INSERT_DATE_CLEAR, FALSE};
 
-        // Aggiungi altri controlli qui
+    // Aggiungi altri controlli qui
 }

@@ -1,5 +1,9 @@
 #include "controls.h"
 
+// Definizione delle variabili globali
+WindowControl controls[CONTROL_COUNT];
+int controlsInitialized = 0;
+
 HWND CreateWindowControl(HWND parent, WindowControl *control)
 {
     // Implementazione della funzione per creare un controllo

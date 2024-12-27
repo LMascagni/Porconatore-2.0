@@ -14,5 +14,6 @@ extern int filePathCount;
 
 void LoadFilePaths(const char *filePath);
 const char* GetFilePath(const char *key);
+void printFilePaths();
 
 #endif // FILE_MANAGER_H

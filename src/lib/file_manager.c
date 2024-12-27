@@ -43,3 +43,11 @@ const char* GetFilePath(const char *key)
     }
     return NULL;
 }
+
+void printFilePaths()
+{
+    for (int i = 0; i < filePathCount; i++)
+    {
+        printf("Key: %s, Value: %s\n", filePaths[i].key, filePaths[i].value);
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "0": [
+        {"term": "Porco", "gender": 1},
+        {"term": "Porca", "gender": 0},
+        {"term": "Bastardo", "gender": 1},
+        {"term": "Bastarda", "gender": 0},
+        {"term": "Boia", "gender": 2},
+        {"term": "Bastardo", "gender": 1},
+        {"term": "Bastarda", "gender": 0}
+    ],
+    "1": [
+        {"term": "fascista", "gender": 2},
+        {"term": "epilettica", "gender": 0},
+        {"term": "epilettico", "gender": 1},
+        {"term": "pompinara", "gender": 0},
+        {"term": "pompinaro", "gender": 1},
+        {"term": "gay", "gender": 2},
+        {"term": "bestia", "gender": 2},
+        {"term": "elettricista fuori fase", "gender": 0},
+        {"term": "leghista convinta", "gender": 0},
+        {"term": "leghista convinto", "gender": 1},
+        {"term": "monca", "gender": 0},
+        {"term": "monco", "gender": 1},
+        {"term": "pedofila", "gender": 0},
+        {"term": "pedofilo", "gender": 1},
+        {"term": "troglodita", "gender": 2},
+        {"term": "x-men", "gender": 2},
+        {"term": "sei volte porca per ogni atomo", "gender": 0},
+        {"term": "sei volte porco per ogni atomo", "gender": 1},
+        {"term": ".EXE", "gender": 2},
+        {"term": "impiccata al contrario", "gender": 0},
+        {"term": "impiccato al contrario", "gender": 1},
+        {"term": "nazista", "gender": 2},
+        {"term": "comunista", "gender": 2},
+        {"term": "negra", "gender": 0},
+        {"term": "negro", "gender": 1},
+        {"term": "cinese", "gender": 2},
+        {"term": "indiana", "gender": 0},
+        {"term": "indiano", "gender": 1},
+        {"term": "troia", "gender": 0},
+        {"term": "puttaniere", "gender": 1}
+    ]
+}

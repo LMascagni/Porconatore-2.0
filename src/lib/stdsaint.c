@@ -5,10 +5,11 @@
 #include <string.h>
 #include "stdsaint.h"
 
+santo santi[MAX_MONTHS][MAX_DAYS];
 
 int daysInMonth[] = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS])
+int parseAndStoreSaints(const char *filename)
 {
 #ifdef DEBUG
     printf("Parsing file: %s\n", filename);
@@ -27,7 +28,7 @@ int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS])
 
     char line[512]; // Memory section for storing the read line
     char name[100]; // Memory section for storing the read name
-    int feminine;
+    int gender = 0; // Memory section for storing the gender
 
     int month = 0;
     int day = 0;
@@ -60,17 +61,17 @@ int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS])
         }
 
         // Assing data to the saint struct, if any is found
-        int parsedCount = sscanf(line, " {\"name\": \"%[^\"]\", \"feminine\": %d}", name, &feminine);
+        int parsedCount = sscanf(line, " {\"name\": \"%[^\"]\", \"gender\": %d}", name, &gender);
         if (parsedCount == 2 && month >= 0 && month < MAX_MONTHS)
         {
 
-            santi[month][day].sesso = (feminine == 1) ? F : M;
-            strcpy(santi[month][day].nome, name);
+            santi[month][day].gender = (gender == 1) ? F : M;
+            strcpy(santi[month][day].name, name);
 
 #ifdef DEBUG_SAINTS_PARSING
             printf("Found valid data on line %d: %s", counter, line);
             printf("Conteggio: %d, Mese: %d, Giorno: %d, Nome: %s, Sesso: %d\n",
-                   parsedCount, month, day, santi[month][day].nome, santi[month][day].sesso);
+                   parsedCount, month, day, santi[month][day].name, santi[month][day].gender);
 #endif
 
             day++;
@@ -94,35 +95,35 @@ int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS])
     return EXIT_SUCCESS;
 }
 
-int initSaints(santo santi[MAX_MONTHS][MAX_DAYS])
+int initSaints()
 {
     for (int month = 0; month < MAX_MONTHS; month++)
     {
         for (int day = 0; day < MAX_DAYS; day++)
         {
-            santi[month][day].sesso = F;
-            strcpy(santi[month][day].nome, "");
+            santi[month][day].gender = F;
+            strcpy(santi[month][day].name, "");
         }
     }
-    return 1;
+    return EXIT_SUCCESS;
 }
 
-void printAllSaints(santo santi[MAX_MONTHS][MAX_DAYS])
+void printAllSaints()
 {
     for (int month = 0; month < MAX_MONTHS; month++)
     {
         for (int day = 0; day < MAX_DAYS; day++)
         {
-            if (strlen(santi[month][day].nome) > 0)
+            if (strlen(santi[month][day].name) > 0)
             {
                 printf("Mese %d, Giorno %d: Nome: %s, Sesso: %d\n", month + 1, day + 1,
-                       santi[month][day].nome, santi[month][day].sesso);
+                       santi[month][day].name, santi[month][day].gender);
             }
         }
     }
 }
 
-const char *getSaint(santo santi[MAX_MONTHS][MAX_DAYS], int mese, int giorno)
+const char *chkDate(int mese, int giorno)
 {
     // Check month validity
     if (mese < 1 || mese > MAX_MONTHS)
@@ -136,19 +137,24 @@ const char *getSaint(santo santi[MAX_MONTHS][MAX_DAYS], int mese, int giorno)
         return STRING_ERROR_DATE_FORMAT;
     }
 
-    return santi[mese - 1][giorno - 1].nome;
+    return NULL;
 }
 
-const char *getTodaySaint(santo santi[MAX_MONTHS][MAX_DAYS])
+santo getSaint(int mese, int giorno)
+{
+    return santi[mese - 1][giorno - 1];
+}
+
+santo getTodaySaint()
 {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    return getSaint(santi, tm.tm_mon + 1, tm.tm_mday);
+    return getSaint(tm.tm_mon + 1, tm.tm_mday);
 }
 
-const char *getRandomSaint(santo santi[MAX_MONTHS][MAX_DAYS])
+santo getRandomSaint()
 {
     int month = rand() % MAX_MONTHS;
     int day = rand() % daysInMonth[month + 1];
-    return santi[month][day].nome;
+    return santi[month][day];
 }

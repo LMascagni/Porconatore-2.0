@@ -48,6 +48,10 @@ typedef struct
     BOOL visible;
 } WindowControl;
 
+// Variabili globali
+extern WindowControl controls[CONTROL_COUNT];
+extern int controlsInitialized;
+
 // Funzione generica per creare un controllo
 HWND CreateWindowControl(HWND parent, WindowControl *control);
 

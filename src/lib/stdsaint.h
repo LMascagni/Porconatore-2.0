@@ -11,8 +11,8 @@
 #define MAX_ITER 400
 
 //definizione costanti
-#define F false
-#define M true
+#define F 0
+#define M 1
 
 //messaggi di errore
 #define ERROR_SAINT_FILE_NOT_FOUND -1
@@ -23,15 +23,18 @@
 
 
 typedef struct {
-    char nome[MAX_LEN];
-    bool sesso;
+    char name[MAX_LEN];
+    int gender;
 } santo;
 
-int parseAndStoreSaints(const char *filename, santo santi[MAX_MONTHS][MAX_DAYS]);
-int initSaints(santo santi[MAX_MONTHS][MAX_DAYS]);
-void printAllSaints(santo santi[MAX_MONTHS][MAX_DAYS]);
-const char *getSaint(santo santi[MAX_MONTHS][MAX_DAYS], int mese, int giorno);
-const char *getTodaySaint(santo santi[MAX_MONTHS][MAX_DAYS]);
-const char *getRandomSaint(santo santi[MAX_MONTHS][MAX_DAYS]);
+extern santo santi[MAX_MONTHS][MAX_DAYS];
+
+int parseAndStoreSaints(const char *filename);
+int initSaints();
+void printAllSaints();
+const char *chkDate(int mese, int giorno);
+santo getSaint(int mese, int giorno);
+santo getTodaySaint();
+santo getRandomSaint();
 
 #endif // STDSAINT_H
