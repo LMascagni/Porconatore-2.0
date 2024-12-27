@@ -1,4 +1,4 @@
-STRING_WINDOW_TITLE = Porconatore v2.0
+STRING_WINDOW_TITLE = Porconatore v2.0.1
 
 STRING_MENU_TITLE = opzioni
 STRING_MENU_RANDOM_SAINT = Santo random
