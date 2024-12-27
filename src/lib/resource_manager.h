@@ -17,9 +17,12 @@ typedef struct {
     int value;
 } ResourceNumeric;
 
-void LoadResources(FilePath filePaths[], int filePathCount);
+int LoadResources(FilePath filePaths[], int filePathCount);
 const char* GetResourceString(const char *key);
 int GetResourceNumeric(const char *key);
+
+#ifdef DEBUG_RESOURCE_PARSING
 void PrintResources();
+#endif
 
 #endif // RESOURCE_MANAGER_H

@@ -6,10 +6,10 @@
 #include <string.h>
 
 #include "lib/stdbestemms.h"
-#include "lib/stdsaint.h"
 #include "lib/controls.h"
 #include "lib/resource_manager.h"
 #include "lib/file_manager.h"
+#include "lib/error_messages.h"
 
 // percorso del file dei percorsi
 #define FILE_PATHS "data\\file_paths.txt"
@@ -32,7 +32,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     HWND hwnd = CreateMainWindow(hInstance, nCmdShow);
     if (hwnd == NULL)
     {
-        fprintf(stderr, "Errore durante la creazione della finestra.\n");
+        MessageBox(NULL, GetResourceString("ERR_MAIN_WINDOW_CREATION"), GetResourceString("ERR_MSGBOX_TITLE"), MB_ICONERROR);
         exit(EXIT_FAILURE);
     }
 
@@ -55,18 +55,56 @@ void InitializeResources()
     srand(time(NULL));
 
     // carica i percorsi dei file
-    LoadFilePaths(FILE_PATHS);
+    result = LoadFilePaths(FILE_PATHS);
 
-    // inizializza il Bestemms_Engine
-    result = intiBestemmsEngine();
     if (result != EXIT_SUCCESS)
     {
-        fprintf(stderr, "Errore durante l'inizializzazione del Bestemms Engine. Codice errore: %d\n", result);
+        //messagebox con errore e codice errore
+        char errorMessage[256];
+        sprintf(errorMessage, "%s\nCOD: %d", GetResourceString("ERR_FILE_PATH_OPEN"), result);
+        MessageBox(NULL, errorMessage, GetResourceString("ERR_MSGBOX_TITLE"), MB_ICONERROR);
         exit(EXIT_FAILURE);
     }
 
     // carica le risorse
-    LoadResources(filePaths, filePathCount);
+    result = LoadResources(filePaths, filePathCount);
+
+    if (result |= EXIT_SUCCESS)
+    {
+        char errorMessage[256];
+        switch (result)
+        {
+        case ERR_RESOURCE_STRING_OPEN:
+            //messagebox con errore e codice errore
+            //Non posso prendere le stringhe dalle risorse perchè non sono state caricate
+            sprintf(errorMessage, "%s\nCOD: %d", "Errore nell'apertura del file delle risorse stringhe", result);
+            MessageBox(NULL, errorMessage, "Errore", MB_ICONERROR);
+            break;
+        
+        case ERR_RESOURCE_NUMERIC_OPEN:
+            //messagebox con errore e codice errore
+            sprintf(errorMessage, "%s\nCOD: %d", GetResourceString("ERR_RESOURCE_NUMERIC_OPEN"), result);
+            MessageBox(NULL, errorMessage, GetResourceString("ERR_MSGBOX_TITLE"), MB_ICONERROR);
+            break;
+        
+        default:
+            break;
+        }
+        exit(EXIT_FAILURE);
+    }
+
+    // inizializza il Bestemms_Engine
+    result = intiBestemmsEngine();
+
+    if (result != EXIT_SUCCESS)
+    {
+        //messagebox con errore e codice errore
+        char errorMessage[256];
+        sprintf(errorMessage, "%s\nCOD: %d", GetResourceString("ERR_BESTEMMS_ENGINE_INIT"), result);
+        MessageBox(NULL, errorMessage, GetResourceString("ERR_MSGBOX_TITLE"), MB_ICONERROR);
+        exit(EXIT_FAILURE);
+    }
+
 
 #ifdef DEBUG_RESOURCE_PARSING
     // stampa le risorse
@@ -78,16 +116,14 @@ void InitializeResources()
     printFilePaths();
 #endif
 
-    // carica i santi da file
-    if ((result = parseAndStoreSaints(GetFilePath("SAINTS_FILE"))) != EXIT_SUCCESS)
-    {
-        fprintf(stderr, "Errore durante il caricamento dei santi. Codice errore: %d\n", result);
-        exit(EXIT_FAILURE);
-    }
-
 #ifdef DEBUG_SAINTS_PARSING
     // stampa tutti i santi
     printAllSaints(santi);
+#endif
+
+#ifdef DEBUG_BESTEMMS_PARSING
+    // stampa tutte le bestemmie
+    printAllBestemms();
 #endif
 }
 
@@ -330,10 +366,6 @@ void getBestemmsByDateAux()
 
     // Get the text from the edit control
     GetWindowText(controls[CONTROL_EDIT_INSERT_DATE].hwnd, buffer, length + 1);
-
-#ifdef DEBUG_INSERT_DATE
-    printf("Testo inserito: >%s<\n", buffer);
-#endif
 
     // se il testo è uguale a STRING_EDIT_INSERT_DATE, cancella il testo
     if (strcmp(buffer, GetResourceString("STRING_EDIT_INSERT_DATE")) == 0)

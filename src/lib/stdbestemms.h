@@ -16,10 +16,6 @@
 #define M 1
 #define MF 2
 
-// messaggi di errore
-#define ERROR_BESTEMMIA_FILE_NOT_FOUND -1
-#define ERROR_MEMORY_ALLOCATION -2
-
 typedef struct
 {
     char bestemmia[50];
@@ -31,7 +27,7 @@ extern int prefixCounter;
 extern int suffixCounter;
 
 int intiBestemmsEngine();
-int initBestemms();
+void initBestemms();
 int parseAndStoreBestemms(const char *filename);
 const char *getRandomBestemms();
 const char *getTodayBestemms();

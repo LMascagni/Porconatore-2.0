@@ -5,6 +5,7 @@
 #include "stdbestemms.h"
 #include "stdsaint.h"
 #include "file_manager.h"
+#include "error_messages.h"
 
 bestemmia bestemmie[MAX_TYPES][MAX_TERMS];
 int prefixCounter = 0;
@@ -12,14 +13,14 @@ int suffixCounter = 0;
 
 int parseAndStoreBestemms(const char *filename)
 {
-#ifdef DEBUG
+#ifdef DEBUG_SAINTS_PARSING
     printf("Parsing file: %s\n", filename);
 #endif
 
     FILE *file = fopen(filename, "r");
     if (!file)
     {
-        return ERROR_BESTEMMIA_FILE_NOT_FOUND;
+        return ERR_BESTEMMS_FILE_NOT_FOUND;
     }
 
     char line[512]; // Memory section for storing the read line
@@ -101,15 +102,14 @@ int parseAndStoreBestemms(const char *filename)
 
     if (prefixCounter >= MAX_TERMS || suffixCounter >= MAX_TERMS)
     {
-        printf("An error occurred while parsing: reached maximum iterations.\n");
-        return ERROR_MEMORY_ALLOCATION;
+        return ERR_BESTEMMS_MEMORY_ALLOCATION;
     }
     
     fclose(file);
     return EXIT_SUCCESS;
 }
 
-int initBestemms()
+void initBestemms()
 {
     for (int type = 0; type < MAX_TYPES; type++)
     {
@@ -119,9 +119,10 @@ int initBestemms()
             bestemmie[type][term].gender = 0;
         }
     }
-    return EXIT_SUCCESS;
+    return;
 }
 
+#ifdef DEBUG_SAINTS_PARSING
 void printAllBestemms()
 {
     for (int type = 0; type < MAX_TYPES; type++)
@@ -135,33 +136,24 @@ void printAllBestemms()
             }
         }
     }
+    return;
 }
+#endif
 
 int intiBestemmsEngine()
 {
     int result;
 
     //inizializza l'array dei santi
-    result = initSaints();
-    if (result != EXIT_SUCCESS)
-    {   
-        printf("Errore durante l'inizializzazione dei santi. Codice errore: %d\n", result);
-        return result;
-    }
+    initSaints();
 
     //inizializza l'array delle bestemmie
-    result = initBestemms();
-    if (result != EXIT_SUCCESS)
-    {
-        printf("Errore durante l'inizializzazione delle bestemmie. Codice errore: %d\n", result);
-        return result;
-    }
+    initBestemms();
 
     // carica i santi da file
     result = parseAndStoreSaints(GetFilePath("SAINTS_FILE"));
     if (result != EXIT_SUCCESS)
     {
-        printf("Errore durante il caricamento dei santi. Codice errore: %d\n", result);
         return result;
     }
 
@@ -169,7 +161,6 @@ int intiBestemmsEngine()
     result = parseAndStoreBestemms(GetFilePath("BESTEMMS_FILE"));
     if (result != EXIT_SUCCESS)
     {
-        printf("Errore durante il caricamento delle bestemmie. Codice errore: %d\n", result);
         return result;
     }
 
@@ -181,7 +172,6 @@ int intiBestemmsEngine()
 #ifdef DEBUG_SAINTS_PARSING
     printAllSaints();
 #endif
-
 
     return EXIT_SUCCESS;
 }

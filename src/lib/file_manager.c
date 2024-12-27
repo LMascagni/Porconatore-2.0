@@ -2,17 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include "file_manager.h"
+#include "error_messages.h"
 
 FilePath filePaths[MAX_FILE_PATHS];
 int filePathCount = 0;
 
-void LoadFilePaths(const char *filePath)
+int LoadFilePaths(const char *filePath)
 {
     FILE *file = fopen(filePath, "r");
     if (!file)
     {
-        fprintf(stderr, "Errore nell'apertura del file dei percorsi\n");
-        exit(EXIT_FAILURE);
+        return ERR_FILE_PATH_OPEN;
     }
 
     char line[256];
@@ -30,6 +30,7 @@ void LoadFilePaths(const char *filePath)
     }
 
     fclose(file);
+    return EXIT_SUCCESS;
 }
 
 const char* GetFilePath(const char *key)
@@ -44,6 +45,7 @@ const char* GetFilePath(const char *key)
     return NULL;
 }
 
+#ifdef DEBUG_FILE_PATHS
 void printFilePaths()
 {
     for (int i = 0; i < filePathCount; i++)
@@ -51,3 +53,4 @@ void printFilePaths()
         printf("Key: %s, Value: %s\n", filePaths[i].key, filePaths[i].value);
     }
 }
+#endif

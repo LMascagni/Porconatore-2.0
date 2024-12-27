@@ -4,6 +4,7 @@
 #include <time.h>
 #include <string.h>
 #include "stdsaint.h"
+#include "error_messages.h"
 
 santo santi[MAX_MONTHS][MAX_DAYS];
 
@@ -18,9 +19,7 @@ int parseAndStoreSaints(const char *filename)
     FILE *file = fopen(filename, "r");
     if (!file)
     {
-        //TODO: da modificare
-        //perror("Unable to open file");
-        return ERROR_SAINT_FILE_NOT_FOUND;
+        return ERR_SAINT_FILE_NOT_FOUND;
     }
 #ifdef DEBUG
     printf("\tFile opened successfully\n");
@@ -88,14 +87,13 @@ int parseAndStoreSaints(const char *filename)
 
     if (counter >= MAX_ITER)
     {
-        printf("An error occurred while parsing: reached maximum iterations.\n");
-        return ERROR_MEMORY_ALLOCATION;
+        return ERR_SAINT_MEMORY_ALLOCATION;
     }
     fclose(file);
     return EXIT_SUCCESS;
 }
 
-int initSaints()
+void initSaints()
 {
     for (int month = 0; month < MAX_MONTHS; month++)
     {
@@ -105,9 +103,10 @@ int initSaints()
             strcpy(santi[month][day].name, "");
         }
     }
-    return EXIT_SUCCESS;
+    return;
 }
 
+#ifdef DEBUG_SAINTS_PARSING
 void printAllSaints()
 {
     for (int month = 0; month < MAX_MONTHS; month++)
@@ -122,6 +121,7 @@ void printAllSaints()
         }
     }
 }
+#endif
 
 const char *chkDate(int mese, int giorno)
 {

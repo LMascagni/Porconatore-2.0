@@ -1,4 +1,5 @@
 #include "controls.h"
+#include "error_messages.h"
 
 // Definizione delle variabili globali
 WindowControl controls[CONTROL_COUNT];

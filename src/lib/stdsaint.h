@@ -14,10 +14,6 @@
 #define F 0
 #define M 1
 
-//messaggi di errore
-#define ERROR_SAINT_FILE_NOT_FOUND -1
-#define ERROR_MEMORY_ALLOCATION -2
-
 // definizioni messaggi di errore
 #define STRING_ERROR_DATE_FORMAT "Formato data non valido. Inserisci la data nel formato gg/mm"
 
@@ -30,8 +26,12 @@ typedef struct {
 extern santo santi[MAX_MONTHS][MAX_DAYS];
 
 int parseAndStoreSaints(const char *filename);
-int initSaints();
+void initSaints();
+
+#ifdef DEBUG_SAINTS_PARSING
 void printAllSaints();
+#endif
+
 const char *chkDate(int mese, int giorno);
 santo getSaint(int mese, int giorno);
 santo getTodaySaint();

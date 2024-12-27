@@ -1,9 +1,10 @@
-#include "resource_manager.h"
-#include "file_manager.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "resource_manager.h"
+#include "file_manager.h"
+#include "error_messages.h"
 
 static ResourceString resourceStrings[MAX_STRINGS];
 static int resourceStringCount = 0;
@@ -25,11 +26,10 @@ void TrimWhitespace(char *str) {
     *(end + 1) = '\0';
 }
 
-void LoadResourceStrings(const char *filename) {
+int LoadResourceStrings(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
-        fprintf(stderr, "Errore nell'apertura del file delle risorse\n");
-        exit(EXIT_FAILURE);
+        return ERR_RESOURCE_STRING_OPEN;
     }
 
     char line[MAX_STRING_LENGTH];
@@ -53,13 +53,13 @@ void LoadResourceStrings(const char *filename) {
     }
 
     fclose(file);
+    return EXIT_SUCCESS;
 }
 
-void LoadResourceNumerics(const char *filename) {
+int LoadResourceNumerics(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
-        fprintf(stderr, "Errore nell'apertura del file delle risorse numeriche\n");
-        exit(EXIT_FAILURE);
+        return ERR_RESOURCE_NUMERIC_OPEN;
     }
 
     char line[MAX_STRING_LENGTH];
@@ -83,15 +83,25 @@ void LoadResourceNumerics(const char *filename) {
     }
 
     fclose(file);
+    return EXIT_SUCCESS;
 }
 
-void LoadResources(FilePath filePaths[], int filePathCount)
+int LoadResources(FilePath filePaths[], int filePathCount)
 {
+    int result;
     const char *stringFilename = GetFilePath("STRING_RESOURCES");
     const char *numericFilename = GetFilePath("NUMERIC_RESOURCES");
 
-    LoadResourceStrings(stringFilename);
-    LoadResourceNumerics(numericFilename);
+    result = LoadResourceStrings(stringFilename);
+    if (result != EXIT_SUCCESS) {
+        return result;
+    }
+    
+    result = LoadResourceNumerics(numericFilename);
+    if (result != EXIT_SUCCESS) {
+        return result;
+    }
+    return EXIT_SUCCESS;
 }
 
 const char* GetResourceString(const char *key) {
@@ -112,6 +122,7 @@ int GetResourceNumeric(const char *key) {
     return -1; // Return a default value or handle error appropriately
 }
 
+#ifdef DEBUG_RESOURCE_PARSING
 void PrintResources() {
     printf("String resources:\n");
     for (int i = 0; i < resourceStringCount; i++) {
@@ -123,3 +134,4 @@ void PrintResources() {
         printf("%s = %d\n", resourceNumerics[i].key, resourceNumerics[i].value);
     }
 }
+#endif

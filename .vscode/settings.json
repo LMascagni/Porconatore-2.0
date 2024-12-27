@@ -4,7 +4,8 @@
     "stdio.h": "c",
     "time.h": "c",
     "stdsaint.h": "c",
-    "windows.h": "c"
+    "windows.h": "c",
+    "error_messages.h": "c"
   },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",

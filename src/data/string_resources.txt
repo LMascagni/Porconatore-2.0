@@ -18,6 +18,20 @@ STRING_INSERT_DATE_LABEL = Inserisci la data e premi invio
 STRING_EDIT_INSERT_DATE = Inserisci la data (gg/mm)
 STRING_BUTTON_INSERT_DATE_CLEAR = CLEAR
 
-
-STRING_MSG_BOX_EXIT_TITLE = Uscita
+STRING_MSGBOX_EXIT_TITLE = Uscita
 STRING_MSGBOX_EXIT_MESSAGE = Sei sicuro di voler uscire?
+
+ERR_MSGBOX_TITLE = Errore
+ERR_MAIN_WINDOW_CREATION  = Errore durante la creazione della finestra
+ERR_FILE_PATH_OPEN = Errore nell'apertura del file dei percorsi
+ERR_RESOURCE_STRING_OPEN = Errore nell'apertura del file delle risorse stringhe
+ERR_RESOURCE_NUMERIC_OPEN = Errore nell'apertura del file delle risorse numeriche
+ERR_BESTEMMS_ENGINE_INIT = Errore durante l'inizializzazione del Bestemms Engine
+ERR_BESTEMMS_FILE_NOT_FOUND = Errore nel caricamento del file delle bestemmie
+ERR_BESTEMMS_PARSING = Errore durante il parsing del file delle bestemmie
+ERR_BESTEMMS_MEMORY_ALLOCATION = Errore nell'allocazione di memoria per le bestemmie
+ERR_BESTEMMS_ENGINE_PARSE_SAINTS = Errore durante il caricamento dei santi
+ERR_BESTEMMS_ENGINE_PARSE_BESTEMMS = Errore durante il caricamento delle bestemmie
+ERR_SAINT_FILE_NOT_FOUND = Errore nel caricamento del file dei santi
+ERR_SAINT_PARSING = Errore durante il parsing del file dei santi
+ERR_SAINT_MEMORY_ALLOCATION = Errore nell'allocazione di memoria per i santi

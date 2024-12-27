@@ -12,8 +12,10 @@ typedef struct {
 extern FilePath filePaths[MAX_FILE_PATHS];
 extern int filePathCount;
 
-void LoadFilePaths(const char *filePath);
+int LoadFilePaths(const char *filePath);
 const char* GetFilePath(const char *key);
+#ifdef DEBUG_FILE_PATHS
 void printFilePaths();
+#endif
 
 #endif // FILE_MANAGER_H
