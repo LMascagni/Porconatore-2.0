@@ -9,10 +9,15 @@
 #define IDI_WINDOW_ICON 1002
 
 // definizioni per i menu a tendina
-#define ID_MENU_RANDOM_SAINT 1
-#define ID_MENU_SAINT_OF_THE_DAY 2
-#define ID_MENU_INSERT_DATA 3
-#define ID_MENU_EXIT 9
+#define ID_MENU_MODE 1
+#define ID_MENU_SETTINGS 2
+#define ID_MENU_INFO 3
+#define ID_MENU_EXIT 4
+
+#define ID_MENU_RANDOM_SAINT 11
+#define ID_MENU_SAINT_OF_THE_DAY 12
+#define ID_MENU_INSERT_DATA 13
+
 // definizioni per i pulsanti
 #define ID_BUTTON_RANDOM_SAINT_GENERATE 101
 #define ID_BUTTON_RANDOM_SAINT_CLEAR 102

@@ -12,7 +12,7 @@ static int resourceStringCount = 0;
 static ResourceNumeric resourceNumerics[MAX_NUMERICS];
 static int resourceNumericCount = 0;
 
-void TrimWhitespace(char *str) {
+void TrimEndWhitespace(char *str) {
     char *end;
 
     // Trim leading space
@@ -24,6 +24,11 @@ void TrimWhitespace(char *str) {
 
     // Write new null terminator
     *(end + 1) = '\0';
+}
+
+char *TrimStartWhitespace(char *str) {
+    while (isspace((unsigned char)*str)) str++;
+    return str;
 }
 
 int LoadResourceStrings(const char *filename) {
@@ -43,8 +48,14 @@ int LoadResourceStrings(const char *filename) {
             char *value = equalsSign + 1;
 
             // Trim whitespace
-            TrimWhitespace(key);
-            TrimWhitespace(value);
+            TrimEndWhitespace(key);
+            value = TrimStartWhitespace(value);
+
+            //remove \n from value
+            char *newline = strchr(value, '\n');
+            if (newline) {
+                *newline = '\0';
+            }
 
             strncpy(resourceStrings[resourceStringCount].key, key, MAX_STRING_LENGTH);
             strncpy(resourceStrings[resourceStringCount].value, value, MAX_STRING_LENGTH);
@@ -73,8 +84,8 @@ int LoadResourceNumerics(const char *filename) {
             char *value = equalsSign + 1;
 
             // Trim whitespace
-            TrimWhitespace(key);
-            TrimWhitespace(value);
+            TrimEndWhitespace(key);
+            TrimStartWhitespace(value);
 
             strncpy(resourceNumerics[resourceNumericCount].key, key, MAX_STRING_LENGTH);
             resourceNumerics[resourceNumericCount].value = atoi(value);

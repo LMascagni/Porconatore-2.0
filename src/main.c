@@ -59,7 +59,7 @@ void InitializeResources()
 
     if (result != EXIT_SUCCESS)
     {
-        //messagebox con errore e codice errore
+        // messagebox con errore e codice errore
         char errorMessage[256];
         sprintf(errorMessage, "%s\nCOD: %d", GetResourceString("ERR_FILE_PATH_OPEN"), result);
         MessageBox(NULL, errorMessage, GetResourceString("ERR_MSGBOX_TITLE"), MB_ICONERROR);
@@ -75,18 +75,18 @@ void InitializeResources()
         switch (result)
         {
         case ERR_RESOURCE_STRING_OPEN:
-            //messagebox con errore e codice errore
-            //Non posso prendere le stringhe dalle risorse perchè non sono state caricate
+            // messagebox con errore e codice errore
+            // Non posso prendere le stringhe dalle risorse perchè non sono state caricate
             sprintf(errorMessage, "%s\nCOD: %d", "Errore nell'apertura del file delle risorse stringhe", result);
             MessageBox(NULL, errorMessage, "Errore", MB_ICONERROR);
             break;
-        
+
         case ERR_RESOURCE_NUMERIC_OPEN:
-            //messagebox con errore e codice errore
+            // messagebox con errore e codice errore
             sprintf(errorMessage, "%s\nCOD: %d", GetResourceString("ERR_RESOURCE_NUMERIC_OPEN"), result);
             MessageBox(NULL, errorMessage, GetResourceString("ERR_MSGBOX_TITLE"), MB_ICONERROR);
             break;
-        
+
         default:
             break;
         }
@@ -98,13 +98,12 @@ void InitializeResources()
 
     if (result != EXIT_SUCCESS)
     {
-        //messagebox con errore e codice errore
+        // messagebox con errore e codice errore
         char errorMessage[256];
         sprintf(errorMessage, "%s\nCOD: %d", GetResourceString("ERR_BESTEMMS_ENGINE_INIT"), result);
         MessageBox(NULL, errorMessage, GetResourceString("ERR_MSGBOX_TITLE"), MB_ICONERROR);
         exit(EXIT_FAILURE);
     }
-
 
 #ifdef DEBUG_RESOURCE_PARSING
     // stampa le risorse
@@ -175,15 +174,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_CREATE:
     {
-        // Menu a tendina per le opzioni
+        //menu a tendina
         HMENU hMenu = CreateMenu();
         HMENU hSubMenu = CreatePopupMenu();
+        HMENU hSubMenuMode = CreatePopupMenu();
 
-        AppendMenu(hSubMenu, MF_STRING, ID_MENU_RANDOM_SAINT, GetResourceString("STRING_MENU_RANDOM_SAINT"));
-        AppendMenu(hSubMenu, MF_STRING, ID_MENU_SAINT_OF_THE_DAY, GetResourceString("STRING_MENU_SAINT_OF_THE_DAY"));
-        AppendMenu(hSubMenu, MF_STRING, ID_MENU_INSERT_DATA, GetResourceString("STRING_MENU_INSERT_DATE"));
+        AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_RANDOM_SAINT, GetResourceString("STRING_SUBMENU_RANDOM_SAINT"));
+        AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_SAINT_OF_THE_DAY, GetResourceString("STRING_SUBMENU_SAINT_OF_THE_DAY"));
+        AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_INSERT_DATA, GetResourceString("STRING_SUBMENU_INSERT_DATE"));
+
+        AppendMenu(hSubMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuMode, GetResourceString("STRING_MENU_MODE"));
+        //AppendMenu(hSubMenu, MF_STRING, ID_MENU_SETTINGS, GetResourceString("STRING_MENU_SETTINGS"));
+        AppendMenu(hSubMenu, MF_STRING, ID_MENU_INFO, GetResourceString("STRING_MENU_INFO"));
         AppendMenu(hSubMenu, MF_SEPARATOR, 0, NULL);
         AppendMenu(hSubMenu, MF_STRING, ID_MENU_EXIT, GetResourceString("STRING_MENU_EXIT"));
+
         AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenu, GetResourceString("STRING_MENU_TITLE"));
 
         SetMenu(hwnd, hMenu);
@@ -326,6 +331,11 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
         SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
         break;
     }
+
+    case ID_MENU_INFO:
+        MessageBox(hwnd, GetResourceString("STRING_MSGBOX_INFO_MESSAGE"), GetResourceString("STRING_MSGBOX_INFO_TITLE"), MB_OK | MB_ICONINFORMATION);
+        break;
+
     case ID_BUTTON_RANDOM_SAINT_GENERATE:
         SetWindowText(controls[CONTROL_LABEL].hwnd, getRandomBestemms());
         break;

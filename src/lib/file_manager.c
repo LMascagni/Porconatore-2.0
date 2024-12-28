@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "file_manager.h"
 #include "error_messages.h"
 
@@ -21,6 +22,30 @@ int LoadFilePaths(const char *filePath)
         char *key = strtok(line, "=");
         char *value = strtok(NULL, "\n");
 
+        // Trim whitespace
+        char *end;
+
+        // Trim leading space
+        while (isspace((unsigned char)*key)) key++;
+
+        // Trim trailing space
+        end = key + strlen(key) - 1;
+        while (end > key && isspace((unsigned char)*end)) end--;
+
+        // Write new null terminator
+        *(end + 1) = '\0';
+
+
+        // Trim leading space
+        while (isspace((unsigned char)*value)) value++;
+
+        // remove \n from value
+        char *newline = strchr(value, '\n');
+        if (newline)
+        {
+            *newline = '\0';
+        }
+
         if (key && value)
         {
             strcpy(filePaths[filePathCount].key, key);
@@ -33,7 +58,7 @@ int LoadFilePaths(const char *filePath)
     return EXIT_SUCCESS;
 }
 
-const char* GetFilePath(const char *key)
+const char *GetFilePath(const char *key)
 {
     for (int i = 0; i < filePathCount; i++)
     {
