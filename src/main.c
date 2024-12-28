@@ -184,7 +184,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_INSERT_DATA, GetResourceString("STRING_SUBMENU_INSERT_DATE"));
 
         AppendMenu(hSubMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuMode, GetResourceString("STRING_MENU_MODE"));
-        //AppendMenu(hSubMenu, MF_STRING, ID_MENU_SETTINGS, GetResourceString("STRING_MENU_SETTINGS"));
+        AppendMenu(hSubMenu, MF_STRING, ID_MENU_SETTINGS, GetResourceString("STRING_MENU_SETTINGS"));
         AppendMenu(hSubMenu, MF_STRING, ID_MENU_INFO, GetResourceString("STRING_MENU_INFO"));
         AppendMenu(hSubMenu, MF_SEPARATOR, 0, NULL);
         AppendMenu(hSubMenu, MF_STRING, ID_MENU_EXIT, GetResourceString("STRING_MENU_EXIT"));
