@@ -1,17 +1,24 @@
 STRING_WINDOW_TITLE = Porconatore v2.0.2
 
 STRING_MENU_TITLE = opzioni
+
 STRING_MENU_MODE = Modalita'
 STRING_MENU_SETTINGS = impostazioni
 STRING_MENU_INFO = info
 STRING_MENU_EXIT = Esci
 
-STRING_SUBMENU_RANDOM_SAINT = Bestemmia random
-STRING_SUBMENU_SAINT_OF_THE_DAY = Bestemmia del giorno
-STRING_SUBMENU_INSERT_DATE = Inserisci la data
+STRING_SUBMENU_MODE_RANDOM_SAINT = Bestemmia random
+STRING_SUBMENU_MODE_SAINT_OF_THE_DAY = Bestemmia del giorno
+STRING_SUBMENU_MODE_INSERT_DATE = Inserisci la data
+
+STRING_SUBMENU_SETTINGS_THEME = tema
+STRING_SUBMENU_SETTINGS_RELOAD = Ricarica file
+
+STRING_SUBMENU_SETTINGS_THEME_LIGHT = Chiaro
+STRING_SUBMENU_SETTINGS_THEME_DARK = Scuro
 
 STRING_RANDOM_SAINT_LABEL = Premi il pulsante per una bestemmia casuale
-STRING_BUTTON_RANDOM_SAINT_GENERATE = Bestemmia random
+STRING_BUTTON_RANDOM_SAINT_GENERATE = Bestemmia random test
 STRING_BUTTON_RANDOM_SAINT_CLEAR = CLEAR
 
 STRING_SAINT_OF_THE_DAY_LABEL = Premi il pulsante per una bestemmia con il santo del giorno
@@ -27,6 +34,8 @@ STRING_MSGBOX_EXIT_MESSAGE = Sei sicuro di voler uscire?
 
 STRING_MSGBOX_INFO_TITLE = Info
 STRING_MSGBOX_INFO_MESSAGE = Questo programma e' stato sviluppato per generare bestemmie in modo casuale. Per maggiori informazioni e per contribuire al progetto, visita la repository su GitHub: https://github.com/LMascagni/Porconatore-2.0
+
+NOT_AVAILABLE = Funzione attualmente non disponibile
 
 ERR_MSGBOX_TITLE = Errore
 ERR_MAIN_WINDOW_CREATION  = Errore durante la creazione della finestra

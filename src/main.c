@@ -178,13 +178,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HMENU hMenu = CreateMenu();
         HMENU hSubMenu = CreatePopupMenu();
         HMENU hSubMenuMode = CreatePopupMenu();
+        HMENU hSubMenuSettings = CreatePopupMenu();
+        HMENU hSubMenuSettingsTheme = CreatePopupMenu();
 
         AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_RANDOM_SAINT, GetResourceString("STRING_SUBMENU_RANDOM_SAINT"));
         AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_SAINT_OF_THE_DAY, GetResourceString("STRING_SUBMENU_SAINT_OF_THE_DAY"));
         AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_INSERT_DATA, GetResourceString("STRING_SUBMENU_INSERT_DATE"));
 
+        AppendMenu(hSubMenuSettingsTheme, MF_STRING, ID_SUBMENU_SETTINGS_THEME_LIGHT, GetResourceString("STRING_SUBMENU_SETTINGS_THEME_LIGHT"));
+        AppendMenu(hSubMenuSettingsTheme, MF_STRING, ID_SUBMENU_SETTINGS_THEME_DARK, GetResourceString("STRING_SUBMENU_SETTINGS_THEME_DARK"));
+        AppendMenu(hSubMenuSettings, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuSettingsTheme, GetResourceString("STRING_SUBMENU_SETTINGS_THEME"));
+
+        AppendMenu(hSubMenuSettings, MF_STRING, ID_SUBMENU_SETTINGS_RELOAD, GetResourceString("STRING_SUBMENU_SETTINGS_RELOAD"));
+
         AppendMenu(hSubMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuMode, GetResourceString("STRING_MENU_MODE"));
-        AppendMenu(hSubMenu, MF_STRING, ID_MENU_SETTINGS, GetResourceString("STRING_MENU_SETTINGS"));
+        AppendMenu(hSubMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuSettings, GetResourceString("STRING_MENU_SETTINGS"));
         AppendMenu(hSubMenu, MF_STRING, ID_MENU_INFO, GetResourceString("STRING_MENU_INFO"));
         AppendMenu(hSubMenu, MF_SEPARATOR, 0, NULL);
         AppendMenu(hSubMenu, MF_STRING, ID_MENU_EXIT, GetResourceString("STRING_MENU_EXIT"));
@@ -331,6 +339,18 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
         SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
         break;
     }
+
+    case ID_SUBMENU_SETTINGS_THEME_LIGHT:
+        MessageBox(hwnd, GetResourceString("NOT_AVAILABLE"), GetResourceString("STRING_MENU_SETTINGS"), MB_OK | MB_ICONINFORMATION);
+        break;
+
+    case ID_SUBMENU_SETTINGS_THEME_DARK:
+        MessageBox(hwnd, GetResourceString("NOT_AVAILABLE"), GetResourceString("STRING_MENU_SETTINGS"), MB_OK | MB_ICONINFORMATION);
+        break;
+    
+    case ID_SUBMENU_SETTINGS_RELOAD:
+        MessageBox(hwnd, GetResourceString("NOT_AVAILABLE"), GetResourceString("STRING_MENU_SETTINGS"), MB_OK | MB_ICONINFORMATION);
+        break;
 
     case ID_MENU_INFO:
         MessageBox(hwnd, GetResourceString("STRING_MSGBOX_INFO_MESSAGE"), GetResourceString("STRING_MSGBOX_INFO_TITLE"), MB_OK | MB_ICONINFORMATION);
