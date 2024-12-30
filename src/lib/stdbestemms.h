@@ -26,7 +26,7 @@ extern bestemmia bestemmie[MAX_TYPES][MAX_TERMS];
 extern int prefixCounter;
 extern int suffixCounter;
 
-int intiBestemmsEngine();
+int initBestemmsEngine();
 void initBestemms();
 int parseAndStoreBestemms(const char *filename);
 const char *getRandomBestemms();
@@ -34,6 +34,8 @@ const char *getTodayBestemms();
 const char *getBestemmsByDate(int month, int day);
 bestemmia getRandomTerm(int type, int gender);
 const char *buildSimpleBestemms(santo saint);
+
+void printAllBestemms();
 
 int isVowel(char c);
 

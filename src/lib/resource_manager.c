@@ -32,6 +32,8 @@ char *TrimStartWhitespace(char *str) {
 }
 
 int LoadResourceStrings(const char *filename) {
+    resourceStringCount = 0;
+    
     FILE *file = fopen(filename, "r");
     if (!file) {
         return ERR_RESOURCE_STRING_OPEN;
@@ -68,6 +70,8 @@ int LoadResourceStrings(const char *filename) {
 }
 
 int LoadResourceNumerics(const char *filename) {
+    resourceNumericCount = 0;
+
     FILE *file = fopen(filename, "r");
     if (!file) {
         return ERR_RESOURCE_NUMERIC_OPEN;

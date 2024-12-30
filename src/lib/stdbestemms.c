@@ -18,6 +18,9 @@ int parseAndStoreBestemms(const char *filename)
     printf("Parsing file: %s\n", filename);
 #endif
 
+    prefixCounter = 0;
+    suffixCounter = 0;
+
     FILE *file = fopen(filename, "r");
     if (!file)
     {
@@ -123,7 +126,6 @@ void initBestemms()
     return;
 }
 
-#ifdef DEBUG_SAINTS_PARSING
 void printAllBestemms()
 {
     for (int type = 0; type < MAX_TYPES; type++)
@@ -139,9 +141,8 @@ void printAllBestemms()
     }
     return;
 }
-#endif
 
-int intiBestemmsEngine()
+int initBestemmsEngine()
 {
     int result;
 
@@ -231,27 +232,25 @@ const char *buildSimpleBestemms(santo saint)
     }
     else
     {
-        if(saint.gender == M)
-        {
-            sprintf(name, "San %s", saint.name);
-        }
-        else
-        {
-            sprintf(name, "Santa %s", saint.name);
-        }
+        const char *prefix = (saint.gender == M) ? "San" : "Santa";
+        sprintf(name, "%s %s", prefix, saint.name);
     }
 
     static char bestemmia[MAX_LEN];
+    sprintf(bestemmia, "%s %s %s", prefix.bestemmia, name, suffix.bestemmia);
 
-    //se il suffisso è .EXE, non metter gli spazi
-    if (strcmp(suffix.bestemmia, ".EXE") == 0)
+    //se il suffisso è .EXE sostituisci gli spazi con dei punti
+    if (strcmp(suffix.bestemmia, "EXE") == 0)
     {
-        sprintf(bestemmia, "%s.%s%s", prefix.bestemmia, name, suffix.bestemmia);
+        for (int i = 0; bestemmia[i]; i++)
+        {
+            if (bestemmia[i] == ' ')
+            {
+                bestemmia[i] = '.';
+            }
+        }
     }
-    else
-    {
-        sprintf(bestemmia, "%s %s %s", prefix.bestemmia, name, suffix.bestemmia);
-    }
+
 #ifdef DEBUG_BESTEMMS
     printf("Bestemmia generata: %s\n", bestemmia);
 #endif

@@ -22,6 +22,8 @@ void InitializeResources();
 HWND CreateMainWindow(HINSTANCE hInstance, int nCmdShow);
 void HandleCommand(WPARAM wParam, HWND hwnd);
 void SetControlsVisibility(int *controlsToShow, int showCount, int *controlsToHide, int hideCount);
+void CreateWindowControls(HWND hwnd);
+void PositionWindowControls(HWND hwnd);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -94,7 +96,7 @@ void InitializeResources()
     }
 
     // inizializza il Bestemms_Engine
-    result = intiBestemmsEngine();
+    result = initBestemmsEngine();
 
     if (result != EXIT_SUCCESS)
     {
@@ -174,100 +176,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_CREATE:
     {
-        //menu a tendina
-        HMENU hMenu = CreateMenu();
-        HMENU hSubMenu = CreatePopupMenu();
-        HMENU hSubMenuMode = CreatePopupMenu();
-        HMENU hSubMenuSettings = CreatePopupMenu();
-        HMENU hSubMenuSettingsTheme = CreatePopupMenu();
-
-        AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_RANDOM_SAINT, GetResourceString("STRING_SUBMENU_RANDOM_SAINT"));
-        AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_SAINT_OF_THE_DAY, GetResourceString("STRING_SUBMENU_SAINT_OF_THE_DAY"));
-        AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_INSERT_DATA, GetResourceString("STRING_SUBMENU_INSERT_DATE"));
-
-        AppendMenu(hSubMenuSettingsTheme, MF_STRING, ID_SUBMENU_SETTINGS_THEME_LIGHT, GetResourceString("STRING_SUBMENU_SETTINGS_THEME_LIGHT"));
-        AppendMenu(hSubMenuSettingsTheme, MF_STRING, ID_SUBMENU_SETTINGS_THEME_DARK, GetResourceString("STRING_SUBMENU_SETTINGS_THEME_DARK"));
-        AppendMenu(hSubMenuSettings, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuSettingsTheme, GetResourceString("STRING_SUBMENU_SETTINGS_THEME"));
-
-        AppendMenu(hSubMenuSettings, MF_STRING, ID_SUBMENU_SETTINGS_RELOAD, GetResourceString("STRING_SUBMENU_SETTINGS_RELOAD"));
-
-        AppendMenu(hSubMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuMode, GetResourceString("STRING_MENU_MODE"));
-        AppendMenu(hSubMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuSettings, GetResourceString("STRING_MENU_SETTINGS"));
-        AppendMenu(hSubMenu, MF_STRING, ID_MENU_INFO, GetResourceString("STRING_MENU_INFO"));
-        AppendMenu(hSubMenu, MF_SEPARATOR, 0, NULL);
-        AppendMenu(hSubMenu, MF_STRING, ID_MENU_EXIT, GetResourceString("STRING_MENU_EXIT"));
-
-        AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenu, GetResourceString("STRING_MENU_TITLE"));
-
-        SetMenu(hwnd, hMenu);
-
-        // Crea i controlli
-        for (int i = 0; i < CONTROL_COUNT; i++)
-        {
-            controls[i].hwnd = CreateWindowControl(hwnd, &controls[i]);
-        }
-
-        UpdateControlVisibility(controls, CONTROL_COUNT);
+        CreateWindowControls(hwnd);
         break;
     }
 
     case WM_SIZE:
     {
-        RECT rect;
-        GetClientRect(hwnd, &rect);
-
-        int width = rect.right - rect.left;
-        int height = rect.bottom - rect.top;
-
-        int labelHeight = height / 5;
-        int buttonWidth = width / 2;
-        int buttonHeight = height / 5;
-
-        // Leggi il testo corrente del label
-        char labelText[256];
-        GetWindowText(controls[CONTROL_LABEL].hwnd, labelText, sizeof(labelText));
-
-        // Ridisegna il label con le nuove dimensioni
-        PositionWindowControl(controls[CONTROL_LABEL].hwnd, 0, 0, width, labelHeight);
-
-        // Reimposta il testo letto nel label
-        SetWindowText(controls[CONTROL_LABEL].hwnd, labelText);
-
-        // schermata per il santo random
-        //  Calcola le posizioni dei controlli
-        int buttonY = labelHeight + 20;          // Posiziona il primo pulsante sotto il label con un margine di 10 pixel
-        int buttonX = (width - buttonWidth) / 2; // Centra i pulsanti orizzontalmente
-
-        PositionWindowControl(controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
-        buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
-
-        PositionWindowControl(controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
-        buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
-
-        // schermata per il santo del giorno
-        //  Calcola le posizioni dei controlli
-        buttonY = labelHeight + 20;          // Posiziona il primo pulsante sotto il label con un margine di 10 pixel
-        buttonX = (width - buttonWidth) / 2; // Centra i pulsanti orizzontalmente
-
-        PositionWindowControl(controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
-        buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
-
-        PositionWindowControl(controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
-        buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
-
-        // schermata per l'inserimento della data
-        //  Calcola le posizioni dei controlli
-        buttonY = labelHeight + 20;          // Posiziona il primo pulsante sotto il label con un margine di 10 pixel
-        buttonX = (width - buttonWidth) / 2; // Centra i pulsanti orizzontalmente
-
-        PositionWindowControl(controls[CONTROL_EDIT_INSERT_DATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
-        buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
-
-        PositionWindowControl(controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
-        buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
-
-        // Posiziona altri controlli qui
-
+        PositionWindowControls(hwnd);
         break;
     }
 
@@ -347,9 +262,13 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
     case ID_SUBMENU_SETTINGS_THEME_DARK:
         MessageBox(hwnd, GetResourceString("NOT_AVAILABLE"), GetResourceString("STRING_MENU_SETTINGS"), MB_OK | MB_ICONINFORMATION);
         break;
-    
+
     case ID_SUBMENU_SETTINGS_RELOAD:
-        MessageBox(hwnd, GetResourceString("NOT_AVAILABLE"), GetResourceString("STRING_MENU_SETTINGS"), MB_OK | MB_ICONINFORMATION);
+        if(MessageBox(hwnd, GetResourceString("STRING_MSGBOX_RELOAD_CONFIRM_MESSAGE"), GetResourceString("STRING_MSGBOX_RELOAD_TITLE"), MB_YESNO | MB_ICONQUESTION) == IDYES)
+        {
+            initBestemmsEngine();
+            MessageBox(hwnd, GetResourceString("STRING_MSGBOX_RELOAD_SUCCESS_MESSAGE"), GetResourceString("STRING_MSGBOX_RELOAD_TITLE"), MB_OK | MB_ICONINFORMATION);
+        }
         break;
 
     case ID_MENU_INFO:
@@ -466,3 +385,100 @@ void SetControlsVisibility(int *controlsToShow, int showCount, int *controlsToHi
     // Aggiorna l'interfaccia
     UpdateControlVisibility(controls, CONTROL_COUNT);
 }
+
+void CreateWindowControls(HWND hwnd)
+{
+    // menu a tendina
+    HMENU hMenu = CreateMenu();
+    HMENU hSubMenu = CreatePopupMenu();
+    HMENU hSubMenuMode = CreatePopupMenu();
+    HMENU hSubMenuSettings = CreatePopupMenu();
+    HMENU hSubMenuSettingsTheme = CreatePopupMenu();
+
+    AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_RANDOM_SAINT, GetResourceString("STRING_SUBMENU_MODE_RANDOM_SAINT"));
+    AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_SAINT_OF_THE_DAY, GetResourceString("STRING_SUBMENU_MODE_SAINT_OF_THE_DAY"));
+    AppendMenu(hSubMenuMode, MF_STRING, ID_MENU_INSERT_DATA, GetResourceString("STRING_SUBMENU_MODE_INSERT_DATE"));
+
+    AppendMenu(hSubMenuSettingsTheme, MF_STRING, ID_SUBMENU_SETTINGS_THEME_LIGHT, GetResourceString("STRING_SUBMENU_SETTINGS_THEME_LIGHT"));
+    AppendMenu(hSubMenuSettingsTheme, MF_STRING, ID_SUBMENU_SETTINGS_THEME_DARK, GetResourceString("STRING_SUBMENU_SETTINGS_THEME_DARK"));
+    AppendMenu(hSubMenuSettings, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuSettingsTheme, GetResourceString("STRING_SUBMENU_SETTINGS_THEME"));
+
+    AppendMenu(hSubMenuSettings, MF_STRING, ID_SUBMENU_SETTINGS_RELOAD, GetResourceString("STRING_SUBMENU_SETTINGS_RELOAD"));
+
+    AppendMenu(hSubMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuMode, GetResourceString("STRING_MENU_MODE"));
+    AppendMenu(hSubMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenuSettings, GetResourceString("STRING_MENU_SETTINGS"));
+    AppendMenu(hSubMenu, MF_STRING, ID_MENU_INFO, GetResourceString("STRING_MENU_INFO"));
+    AppendMenu(hSubMenu, MF_SEPARATOR, 0, NULL);
+    AppendMenu(hSubMenu, MF_STRING, ID_MENU_EXIT, GetResourceString("STRING_MENU_EXIT"));
+
+    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)hSubMenu, GetResourceString("STRING_MENU_TITLE"));
+
+    SetMenu(hwnd, hMenu);
+
+    // Crea i controlli
+    for (int i = 0; i < CONTROL_COUNT; i++)
+    {
+        controls[i].hwnd = CreateWindowControl(hwnd, &controls[i]);
+    }
+
+    UpdateControlVisibility(controls, CONTROL_COUNT);
+}
+
+void PositionWindowControls(HWND hwnd)
+{
+    RECT rect;
+    GetClientRect(hwnd, &rect);
+
+    int width = rect.right - rect.left;
+    int height = rect.bottom - rect.top;
+
+    int labelHeight = height / 5;
+    int buttonWidth = width / 2;
+    int buttonHeight = height / 5;
+
+    // Leggi il testo corrente del label
+    char labelText[256];
+    GetWindowText(controls[CONTROL_LABEL].hwnd, labelText, sizeof(labelText));
+
+    // Ridisegna il label con le nuove dimensioni
+    PositionWindowControl(controls[CONTROL_LABEL].hwnd, 0, 0, width, labelHeight);
+
+    // Reimposta il testo letto nel label
+    SetWindowText(controls[CONTROL_LABEL].hwnd, labelText);
+
+    // schermata per il santo random
+    //  Calcola le posizioni dei controlli
+    int buttonY = labelHeight + 20;          // Posiziona il primo pulsante sotto il label con un margine di 10 pixel
+    int buttonX = (width - buttonWidth) / 2; // Centra i pulsanti orizzontalmente
+
+    PositionWindowControl(controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
+    buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
+
+    PositionWindowControl(controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
+    buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
+
+    // schermata per il santo del giorno
+    //  Calcola le posizioni dei controlli
+    buttonY = labelHeight + 20;          // Posiziona il primo pulsante sotto il label con un margine di 10 pixel
+    buttonX = (width - buttonWidth) / 2; // Centra i pulsanti orizzontalmente
+
+    PositionWindowControl(controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
+    buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
+
+    PositionWindowControl(controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
+    buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
+
+    // schermata per l'inserimento della data
+    //  Calcola le posizioni dei controlli
+    buttonY = labelHeight + 20;          // Posiziona il primo pulsante sotto il label con un margine di 10 pixel
+    buttonX = (width - buttonWidth) / 2; // Centra i pulsanti orizzontalmente
+
+    PositionWindowControl(controls[CONTROL_EDIT_INSERT_DATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
+    buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
+
+    PositionWindowControl(controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
+    buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
+
+    // Posiziona altri controlli qui
+}
+

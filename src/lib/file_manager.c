@@ -10,6 +10,8 @@ int filePathCount = 0;
 
 int LoadFilePaths(const char *filePath)
 {
+    filePathCount = 0;
+
     FILE *file = fopen(filePath, "r");
     if (!file)
     {

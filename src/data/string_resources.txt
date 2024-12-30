@@ -18,7 +18,7 @@ STRING_SUBMENU_SETTINGS_THEME_LIGHT = Chiaro
 STRING_SUBMENU_SETTINGS_THEME_DARK = Scuro
 
 STRING_RANDOM_SAINT_LABEL = Premi il pulsante per una bestemmia casuale
-STRING_BUTTON_RANDOM_SAINT_GENERATE = Bestemmia random test
+STRING_BUTTON_RANDOM_SAINT_GENERATE = Bestemmia random
 STRING_BUTTON_RANDOM_SAINT_CLEAR = CLEAR
 
 STRING_SAINT_OF_THE_DAY_LABEL = Premi il pulsante per una bestemmia con il santo del giorno
@@ -31,6 +31,10 @@ STRING_BUTTON_INSERT_DATE_CLEAR = CLEAR
 
 STRING_MSGBOX_EXIT_TITLE = Uscita
 STRING_MSGBOX_EXIT_MESSAGE = Sei sicuro di voler uscire?
+
+STRING_MSGBOX_RELOAD_TITLE = Ricarica file
+STRING_MSGBOX_RELOAD_CONFIRM_MESSAGE = Vuoi davvero ricaricare le risorse?
+STRING_MSGBOX_RELOAD_SUCCESS_MESSAGE = Risorse ricaricate con successo
 
 STRING_MSGBOX_INFO_TITLE = Info
 STRING_MSGBOX_INFO_MESSAGE = Questo programma e' stato sviluppato per generare bestemmie in modo casuale. Per maggiori informazioni e per contribuire al progetto, visita la repository su GitHub: https://github.com/LMascagni/Porconatore-2.0

@@ -4,9 +4,7 @@
         {"term": "Porca", "gender": 0},
         {"term": "Bastardo", "gender": 1},
         {"term": "Bastarda", "gender": 0},
-        {"term": "Boia", "gender": 2},
-        {"term": "Bastardo", "gender": 1},
-        {"term": "Bastarda", "gender": 0}
+        {"term": "Boia", "gender": 2}
     ],
     "1": [
         {"term": "fascista", "gender": 2},
@@ -27,7 +25,7 @@
         {"term": "x-men", "gender": 2},
         {"term": "sei volte porca per ogni atomo", "gender": 0},
         {"term": "sei volte porco per ogni atomo", "gender": 1},
-        {"term": ".EXE", "gender": 2},
+        {"term": "EXE", "gender": 2},
         {"term": "impiccata al contrario", "gender": 0},
         {"term": "impiccato al contrario", "gender": 1},
         {"term": "nazista", "gender": 2},
