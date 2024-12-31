@@ -41,6 +41,7 @@ Il progetto è organizzato come segue:
     - `stdbestemms.h`: Header per il generatore di bestemmie.
     - `stdsaint.c`: Implementazione del gestore dei santi.
     - `stdsaint.h`: Header per il gestore dei santi.
+    - `error_messages.h`: Header per i messaggi di errore.
   - `main.c`: Codice sorgente principale dell'applicazione.
   - `Porconatore.exe`: Eseguibile dell'applicazione.
 
