@@ -116,16 +116,6 @@ void InitializeResources()
     // stampa i percorsi dei file
     printFilePaths();
 #endif
-
-#ifdef DEBUG_SAINTS_PARSING
-    // stampa tutti i santi
-    printAllSaints(santi);
-#endif
-
-#ifdef DEBUG_BESTEMMS_PARSING
-    // stampa tutte le bestemmie
-    printAllBestemms();
-#endif
 }
 
 HWND CreateMainWindow(HINSTANCE hInstance, int nCmdShow)

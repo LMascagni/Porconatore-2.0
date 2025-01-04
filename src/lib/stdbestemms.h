@@ -20,6 +20,7 @@ typedef struct
 {
     char bestemmia[50];
     int gender;
+    int offensiveness;
 } bestemmia;
 
 extern bestemmia bestemmie[MAX_TYPES][MAX_TERMS];

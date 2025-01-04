@@ -27,11 +27,7 @@ extern santo santi[MAX_MONTHS][MAX_DAYS];
 
 int parseAndStoreSaints(const char *filename);
 void initSaints();
-
-#ifdef DEBUG_SAINTS_PARSING
 void printAllSaints();
-#endif
-
 const char *chkDate(int mese, int giorno);
 santo getSaint(int mese, int giorno);
 santo getTodaySaint();

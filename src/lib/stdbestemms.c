@@ -18,8 +18,8 @@ int parseAndStoreBestemms(const char *filename)
     printf("Parsing file: %s\n", filename);
 #endif
 
-    prefixCounter = 0;
-    suffixCounter = 0;
+    //prefixCounter = 0;
+    //suffixCounter = 0;
 
     FILE *file = fopen(filename, "r");
     if (!file)
@@ -29,7 +29,8 @@ int parseAndStoreBestemms(const char *filename)
 
     char line[512]; // Memory section for storing the read line
     char term[100]; // Memory section for storing the read name
-    int gender = 0; // Memory section for storing the gender
+    int gender = 0; // Memory section for storing the gende
+    int offense_level = 0;
 
     int type = 0; // 0 = prefix, 1 = suffix
 #ifdef DEBUG_BESTEMMS_PARSING
@@ -63,17 +64,19 @@ int parseAndStoreBestemms(const char *filename)
         }
 
         // Assing data to the saint struct, if any is found
-        int parsedCount = sscanf(line, " {\"term\": \"%[^\"]\", \"gender\": %d}", term, &gender);
-        if (parsedCount == 2 && type >= 0 && type < MAX_TYPES)
+        int parsedCount = sscanf(line, " {\"term\": \"%[^\"]\", \"gender\": %d, \"offense\": %d}", term, &gender, &offense_level);
+        if (parsedCount == 3 && type >= 0 && type < MAX_TYPES)
         {
             switch (type)
             {
                 case PREFIX:
                     strcpy(bestemmie[type][prefixCounter].bestemmia, term);
                     bestemmie[type][prefixCounter].gender = gender;
+                    bestemmie[type][prefixCounter].offensiveness = offense_level;
+
 #ifdef DEBUG_BESTEMMS_PARSING
                     printf("Found valid data on line %d: %s", counter, line);
-                    printf("Conteggio: %d, type: %d, term: %s, gender: %d\n", prefixCounter, type, term, gender);
+                    printf("Conteggio: %d, type: %d, term: %s, gender: %d, offensive: %d\n", prefixCounter, type, term, gender, offense_level);
 #endif
                     prefixCounter++;
                     break;
@@ -81,9 +84,11 @@ int parseAndStoreBestemms(const char *filename)
                 case SUFFIX:
                     strcpy(bestemmie[type][suffixCounter].bestemmia, term);
                     bestemmie[type][suffixCounter].gender = gender;
+                    bestemmie[type][suffixCounter].offensiveness = offense_level;
+
 #ifdef DEBUG_BESTEMMS_PARSING
                     printf("Found valid data on line %d: %s", counter, line);
-                    printf("Conteggio: %d, type: %d, term: %s, gender: %d\n", suffixCounter, type, term, gender);
+                    printf("Conteggio: %d, type: %d, term: %s, gender: %d, offensive: %d\n", prefixCounter, type, term, gender, offense_level);
 #endif
                     suffixCounter++;
                     break;
@@ -97,7 +102,7 @@ int parseAndStoreBestemms(const char *filename)
         else
         {
 #ifdef DEBUG_BESTEMMS_PARSING
-            printf("Could not find any data on line %d: %s", counter, line);
+            printf("Could not find any data on line %d: %s\n", counter, line);
 #endif
         }
     }
@@ -134,8 +139,8 @@ void printAllBestemms()
         {
             if (strlen(bestemmie[type][term].bestemmia) > 0)
             {
-                printf("Tipo %d, Termine %d: Bestemmia: %s, Genere: %d\n", type, term,
-                       bestemmie[type][term].bestemmia, bestemmie[type][term].gender);
+                printf("Tipo %d, Termine %d: Bestemmia: %s, Genere: %d, offensivita': %d\n", type, term,
+                       bestemmie[type][term].bestemmia, bestemmie[type][term].gender, bestemmie[type][term].offensiveness);
             }
         }
     }

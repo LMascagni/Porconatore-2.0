@@ -107,7 +107,6 @@ void initSaints()
     return;
 }
 
-#ifdef DEBUG_SAINTS_PARSING
 void printAllSaints()
 {
     for (int month = 0; month < MAX_MONTHS; month++)
@@ -119,10 +118,13 @@ void printAllSaints()
                 printf("Mese %d, Giorno %d: Nome: %s, Sesso: %d\n", month + 1, day + 1,
                        santi[month][day].name, santi[month][day].gender);
             }
+            else 
+            {
+                printf("Mese %d, Giorno %d: Nessun santo\n", month + 1, day + 1);
+            }
         }
     }
 }
-#endif
 
 const char *chkDate(int mese, int giorno)
 {
