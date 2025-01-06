@@ -59,8 +59,11 @@ typedef struct
 } WindowControl;
 
 // Variabili globali
-extern WindowControl controls[CONTROL_COUNT];
-extern int controlsInitialized;
+typedef struct
+{
+   WindowControl controls[CONTROL_COUNT];
+   int controlsInitialized;
+}Controls;
 
 // Funzione generica per creare un controllo
 HWND CreateWindowControl(HWND parent, WindowControl *control);

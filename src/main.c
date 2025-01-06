@@ -20,8 +20,8 @@ void getBestemmsByDateAux();
 void InitializeWindowControls();
 void InitializeResources();
 HWND CreateMainWindow(HINSTANCE hInstance, int nCmdShow);
-void HandleCommand(WPARAM wParam, HWND hwnd);
-void SetControlsVisibility(int *controlsToShow, int showCount, int *controlsToHide, int hideCount);
+void HandleCommand(WPARAM wParam, HWND hwnd, Controls mainWinControls);
+void SetControlsVisibility(int *controlsToShow, int showCount, int *controlsToHide, int hideCount, Controls winControls);
 void CreateWindowControls(HWND hwnd);
 void PositionWindowControls(HWND hwnd);
 
@@ -147,11 +147,15 @@ HWND CreateMainWindow(HINSTANCE hInstance, int nCmdShow)
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+
+   // dichiarazione dei controlli
+   Controls mainWinControls;
+
     // Inizializza i controlli se non sono stati inizializzati
-    if (!controlsInitialized)
+    if (!mainWinControls.controlsInitialized)
     {
-        InitializeWindowControls(controls);
-        controlsInitialized = 1;
+        InitializeWindowControls(mainWinControls.controls);
+        mainWinControls.controlsInitialized = 1;
     }
 
     switch (uMsg)
@@ -177,7 +181,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 
     case WM_COMMAND:
-        HandleCommand(wParam, hwnd);
+        HandleCommand(wParam, hwnd, mainWinControls);
         break;
 
     case WM_PAINT:
@@ -199,7 +203,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void HandleCommand(WPARAM wParam, HWND hwnd)
+void HandleCommand(WPARAM wParam, HWND hwnd, Controls mainWinControls)
 {
     switch (LOWORD(wParam))
     {
@@ -215,9 +219,9 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
         // Nasconde gli altri controlli
         int controlsToHide[] = {CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE, CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR, CONTROL_EDIT_INSERT_DATE, CONTROL_BUTTON_INSERT_DATE_CLEAR};
 
-        SetControlsVisibility(controlsToShow, sizeof(controlsToShow) / sizeof(controlsToShow[0]), controlsToHide, sizeof(controlsToHide) / sizeof(controlsToHide[0]));
+        SetControlsVisibility(controlsToShow, sizeof(controlsToShow) / sizeof(controlsToShow[0]), controlsToHide, sizeof(controlsToHide) / sizeof(controlsToHide[0]), mainWinControls);
 
-        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_RANDOM_SAINT_LABEL"));
+        SetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_RANDOM_SAINT_LABEL"));
         break;
     }
     case ID_MENU_SAINT_OF_THE_DAY:
@@ -227,9 +231,9 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
         // Nasconde gli altri controlli
         int controlsToHide[] = {CONTROL_BUTTON_RANDOM_SAINT_GENERATE, CONTROL_BUTTON_RANDOM_SAINT_CLEAR, CONTROL_EDIT_INSERT_DATE, CONTROL_BUTTON_INSERT_DATE_CLEAR};
 
-        SetControlsVisibility(controlsToShow, sizeof(controlsToShow) / sizeof(controlsToShow[0]), controlsToHide, sizeof(controlsToHide) / sizeof(controlsToHide[0]));
+        SetControlsVisibility(controlsToShow, sizeof(controlsToShow) / sizeof(controlsToShow[0]), controlsToHide, sizeof(controlsToHide) / sizeof(controlsToHide[0]), mainWinControls);
 
-        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_SAINT_OF_THE_DAY_LABEL"));
+        SetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_SAINT_OF_THE_DAY_LABEL"));
         break;
     }
     case ID_MENU_INSERT_DATA:
@@ -239,9 +243,9 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
         // Nasconde gli altri controlli
         int controlsToHide[] = {CONTROL_BUTTON_RANDOM_SAINT_GENERATE, CONTROL_BUTTON_RANDOM_SAINT_CLEAR, CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE, CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR};
 
-        SetControlsVisibility(controlsToShow, sizeof(controlsToShow) / sizeof(controlsToShow[0]), controlsToHide, sizeof(controlsToHide) / sizeof(controlsToHide[0]));
+        SetControlsVisibility(controlsToShow, sizeof(controlsToShow) / sizeof(controlsToShow[0]), controlsToHide, sizeof(controlsToHide) / sizeof(controlsToHide[0]), mainWinControls);
 
-        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
+        SetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
         break;
     }
 
@@ -266,28 +270,28 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
         break;
 
     case ID_BUTTON_RANDOM_SAINT_GENERATE:
-        SetWindowText(controls[CONTROL_LABEL].hwnd, getRandomBestemms());
+        SetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, getRandomBestemms());
         break;
 
     case ID_BUTTON_RANDOM_SAINT_CLEAR:
-        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_RANDOM_SAINT_LABEL"));
+        SetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_RANDOM_SAINT_LABEL"));
         break;
 
     case ID_BUTTON_SAINT_OF_THE_DAY_GENERATE:
-        SetWindowText(controls[CONTROL_LABEL].hwnd, getTodayBestemms());
+        SetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, getTodayBestemms());
         break;
 
     case ID_BUTTON_SAINT_OF_THE_DAY_CLEAR:
-        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_SAINT_OF_THE_DAY_LABEL"));
+        SetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_SAINT_OF_THE_DAY_LABEL"));
         break;
 
     case ID_EDIT_INSERT_DATE:
-        getBestemmsByDateAux();
+        getBestemmsByDateAux(mainWinControls);
         break;
 
     case ID_BUTTON_INSERT_DATE_CLEAR:
-        SetWindowText(controls[CONTROL_EDIT_INSERT_DATE].hwnd, GetResourceString("STRING_EDIT_INSERT_DATE"));
-        SetWindowText(controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
+        SetWindowText(mainWinControls.controls[CONTROL_EDIT_INSERT_DATE].hwnd, GetResourceString("STRING_EDIT_INSERT_DATE"));
+        SetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, GetResourceString("STRING_INSERT_DATE_LABEL"));
         break;
 
     default:
@@ -295,22 +299,22 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
     }
 }
 
-void getBestemmsByDateAux()
+void getBestemmsByDateAux(Controls mainWinControls)
 {
     // Get the length of the text
-    int length = GetWindowTextLength(controls[CONTROL_EDIT_INSERT_DATE].hwnd);
+    int length = GetWindowTextLength(mainWinControls.controls[CONTROL_EDIT_INSERT_DATE].hwnd);
 
     // Allocate memory for the text
     char *buffer = (char *)GlobalAlloc(GPTR, length + 1);
 
     // Get the text from the edit control
-    GetWindowText(controls[CONTROL_EDIT_INSERT_DATE].hwnd, buffer, length + 1);
+    GetWindowText(mainWinControls.controls[CONTROL_EDIT_INSERT_DATE].hwnd, buffer, length + 1);
 
     // se il testo è uguale a STRING_EDIT_INSERT_DATE, cancella il testo
     if (strcmp(buffer, GetResourceString("STRING_EDIT_INSERT_DATE")) == 0)
     {
         buffer[0] = '\0';
-        SetWindowText(controls[CONTROL_EDIT_INSERT_DATE].hwnd, buffer);
+        SetWindowText(mainWinControls.controls[CONTROL_EDIT_INSERT_DATE].hwnd, buffer);
         return;
     }
 
@@ -327,13 +331,13 @@ void getBestemmsByDateAux()
         const char *saint = getBestemmsByDate(month, day);
 
         // Set the text of the label
-        SetWindowText(controls[CONTROL_LABEL].hwnd, saint);
+        SetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, saint);
 
         // Clear the edit control
         buffer[0] = '\0';
 
         // Set the text of the edit control
-        SetWindowText(controls[CONTROL_EDIT_INSERT_DATE].hwnd, buffer);
+        SetWindowText(mainWinControls.controls[CONTROL_EDIT_INSERT_DATE].hwnd, buffer);
     }
 
     // Free the memory
@@ -341,42 +345,42 @@ void getBestemmsByDateAux()
 }
 
 // Funzione per inizializzare i controlli
-void InitializeWindowControls()
+void InitializeMainWindowControls(Controls mainWinControls)
 {
     // Definizione dei controlli
     // Nome della classe, testo, stile, posizione e dimensioni, ID, visibilità
     // controllo per il label
-    controls[CONTROL_LABEL] = (WindowControl){NULL, "STATIC", GetResourceString("STRING_RANDOM_SAINT_LABEL"), WS_VISIBLE | WS_CHILD | SS_CENTER, 0, 0, 0, 0, NULL, TRUE};
+    mainWinControls.controls[CONTROL_LABEL] = (WindowControl){NULL, "STATIC", GetResourceString("STRING_RANDOM_SAINT_LABEL"), WS_VISIBLE | WS_CHILD | SS_CENTER, 0, 0, 0, 0, NULL, TRUE};
     // controlli per il santo random
-    controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_RANDOM_SAINT_GENERATE"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_RANDOM_SAINT_GENERATE, TRUE};
-    controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_RANDOM_SAINT_CLEAR"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_RANDOM_SAINT_CLEAR, TRUE};
+    mainWinControls.controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_RANDOM_SAINT_GENERATE"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_RANDOM_SAINT_GENERATE, TRUE};
+    mainWinControls.controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_RANDOM_SAINT_CLEAR"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_RANDOM_SAINT_CLEAR, TRUE};
     // controlli per il santo del giorno
-    controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_SAINT_OF_THE_DAY_GENERATE"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_SAINT_OF_THE_DAY_GENERATE, FALSE};
-    controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_SAINT_OF_THE_DAY_CLEAR"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_SAINT_OF_THE_DAY_CLEAR, FALSE};
+    mainWinControls.controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_SAINT_OF_THE_DAY_GENERATE"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_SAINT_OF_THE_DAY_GENERATE, FALSE};
+    mainWinControls.controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_SAINT_OF_THE_DAY_CLEAR"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_SAINT_OF_THE_DAY_CLEAR, FALSE};
     // controlli per l'inserimento della data
-    controls[CONTROL_EDIT_INSERT_DATE] = (WindowControl){NULL, "EDIT", GetResourceString("STRING_EDIT_INSERT_DATE"), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL, 0, 0, 0, 0, (HMENU)ID_EDIT_INSERT_DATE, FALSE};
-    controls[CONTROL_BUTTON_INSERT_DATE_CLEAR] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_INSERT_DATE_CLEAR"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_INSERT_DATE_CLEAR, FALSE};
+    mainWinControls.controls[CONTROL_EDIT_INSERT_DATE] = (WindowControl){NULL, "EDIT", GetResourceString("STRING_EDIT_INSERT_DATE"), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL, 0, 0, 0, 0, (HMENU)ID_EDIT_INSERT_DATE, FALSE};
+    mainWinControls.controls[CONTROL_BUTTON_INSERT_DATE_CLEAR] = (WindowControl){NULL, "BUTTON", GetResourceString("STRING_BUTTON_INSERT_DATE_CLEAR"), WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, (HMENU)ID_BUTTON_INSERT_DATE_CLEAR, FALSE};
 
     // Aggiungi altri controlli qui
 }
 
-void SetControlsVisibility(int *controlsToShow, int showCount, int *controlsToHide, int hideCount)
+void SetControlsVisibility(int *controlsToShow, int showCount, int *controlsToHide, int hideCount, Controls winControls)
 {
     for (int i = 0; i < showCount; i++)
     {
-        controls[controlsToShow[i]].visible = TRUE;
+        winControls.controls[controlsToShow[i]].visible = TRUE;
     }
 
     for (int i = 0; i < hideCount; i++)
     {
-        controls[controlsToHide[i]].visible = FALSE;
+        winControls.controls[controlsToHide[i]].visible = FALSE;
     }
 
     // Aggiorna l'interfaccia
-    UpdateControlVisibility(controls, CONTROL_COUNT);
+    UpdateControlVisibility(winControls.controls, CONTROL_COUNT);
 }
 
-void CreateWindowControls(HWND hwnd)
+void CreateMainWindowControls(HWND hwnd, Controls mainWinControls)
 {
     // menu a tendina
     HMENU hMenu = CreateMenu();
@@ -408,13 +412,13 @@ void CreateWindowControls(HWND hwnd)
     // Crea i controlli
     for (int i = 0; i < CONTROL_COUNT; i++)
     {
-        controls[i].hwnd = CreateWindowControl(hwnd, &controls[i]);
+        mainWinControls.controls[i].hwnd = CreateWindowControl(hwnd, &mainWinControls.controls[i]);
     }
 
-    UpdateControlVisibility(controls, CONTROL_COUNT);
+    UpdateControlVisibility(mainWinControls.controls, CONTROL_COUNT);
 }
 
-void PositionWindowControls(HWND hwnd)
+void PositionMainWindowControls(HWND hwnd, Controls mainWinControls)
 {
     RECT rect;
     GetClientRect(hwnd, &rect);
@@ -428,23 +432,23 @@ void PositionWindowControls(HWND hwnd)
 
     // Leggi il testo corrente del label
     char labelText[256];
-    GetWindowText(controls[CONTROL_LABEL].hwnd, labelText, sizeof(labelText));
+    GetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, labelText, sizeof(labelText));
 
     // Ridisegna il label con le nuove dimensioni
-    PositionWindowControl(controls[CONTROL_LABEL].hwnd, 0, 0, width, labelHeight);
+    PositionWindowControl(mainWinControls.controls[CONTROL_LABEL].hwnd, 0, 0, width, labelHeight);
 
     // Reimposta il testo letto nel label
-    SetWindowText(controls[CONTROL_LABEL].hwnd, labelText);
+    SetWindowText(mainWinControls.controls[CONTROL_LABEL].hwnd, labelText);
 
     // schermata per il santo random
     //  Calcola le posizioni dei controlli
     int buttonY = labelHeight + 20;          // Posiziona il primo pulsante sotto il label con un margine di 10 pixel
     int buttonX = (width - buttonWidth) / 2; // Centra i pulsanti orizzontalmente
 
-    PositionWindowControl(controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
+    PositionWindowControl(mainWinControls.controls[CONTROL_BUTTON_RANDOM_SAINT_GENERATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
     buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
 
-    PositionWindowControl(controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
+    PositionWindowControl(mainWinControls.controls[CONTROL_BUTTON_RANDOM_SAINT_CLEAR].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
     buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
 
     // schermata per il santo del giorno
@@ -452,21 +456,7 @@ void PositionWindowControls(HWND hwnd)
     buttonY = labelHeight + 20;          // Posiziona il primo pulsante sotto il label con un margine di 10 pixel
     buttonX = (width - buttonWidth) / 2; // Centra i pulsanti orizzontalmente
 
-    PositionWindowControl(controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
-    buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
-
-    PositionWindowControl(controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_CLEAR].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
-    buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
-
-    // schermata per l'inserimento della data
-    //  Calcola le posizioni dei controlli
-    buttonY = labelHeight + 20;          // Posiziona il primo pulsante sotto il label con un margine di 10 pixel
-    buttonX = (width - buttonWidth) / 2; // Centra i pulsanti orizzontalmente
-
-    PositionWindowControl(controls[CONTROL_EDIT_INSERT_DATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
-    buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
-
-    PositionWindowControl(controls[CONTROL_BUTTON_INSERT_DATE_CLEAR].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
+    PositionWindowControl(mainWinControls.controls[CONTROL_BUTTON_SAINT_OF_THE_DAY_GENERATE].hwnd, buttonX, buttonY, buttonWidth, buttonHeight);
     buttonY += buttonHeight + 10; // Aggiorna la posizione Y per il prossimo pulsante
 
     // Posiziona altri controlli qui
