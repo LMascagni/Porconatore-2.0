@@ -1,0 +1,57 @@
+STRING_WINDOW_TITLE = Porconatore v2.0.2
+
+STRING_MENU_TITLE = opzioni
+
+STRING_MENU_MODE = Modalita'
+STRING_MENU_SETTINGS = impostazioni
+STRING_MENU_INFO = info
+STRING_MENU_EXIT = Esci
+
+STRING_SUBMENU_MODE_RANDOM_SAINT = Bestemmia random
+STRING_SUBMENU_MODE_SAINT_OF_THE_DAY = Bestemmia del giorno
+STRING_SUBMENU_MODE_INSERT_DATE = Inserisci la data
+
+STRING_SUBMENU_SETTINGS_THEME = tema
+STRING_SUBMENU_SETTINGS_RELOAD = Ricarica file
+
+STRING_SUBMENU_SETTINGS_THEME_LIGHT = Chiaro
+STRING_SUBMENU_SETTINGS_THEME_DARK = Scuro
+
+STRING_RANDOM_SAINT_LABEL = Premi il pulsante per una bestemmia casuale
+STRING_BUTTON_RANDOM_SAINT_GENERATE = Bestemmia random
+STRING_BUTTON_RANDOM_SAINT_CLEAR = CLEAR
+
+STRING_SAINT_OF_THE_DAY_LABEL = Premi il pulsante per una bestemmia con il santo del giorno
+STRING_BUTTON_SAINT_OF_THE_DAY_GENERATE = Bestemmia del giorno
+STRING_BUTTON_SAINT_OF_THE_DAY_CLEAR = CLEAR
+
+STRING_INSERT_DATE_LABEL = Inserisci la data e premi invio
+STRING_EDIT_INSERT_DATE = Inserisci la data (gg/mm)
+STRING_BUTTON_INSERT_DATE_CLEAR = CLEAR
+
+STRING_MSGBOX_EXIT_TITLE = Uscita
+STRING_MSGBOX_EXIT_MESSAGE = Sei sicuro di voler uscire?
+
+STRING_MSGBOX_RELOAD_TITLE = Ricarica file
+STRING_MSGBOX_RELOAD_CONFIRM_MESSAGE = Vuoi davvero ricaricare le risorse?
+STRING_MSGBOX_RELOAD_SUCCESS_MESSAGE = Risorse ricaricate con successo
+
+STRING_MSGBOX_INFO_TITLE = Info
+STRING_MSGBOX_INFO_MESSAGE = Questo programma e' stato sviluppato per generare bestemmie in modo casuale. Per maggiori informazioni e per contribuire al progetto, visita la repository su GitHub: https://github.com/LMascagni/Porconatore-2.0
+
+NOT_AVAILABLE = Funzione attualmente non disponibile
+
+ERR_MSGBOX_TITLE = Errore
+ERR_MAIN_WINDOW_CREATION  = Errore durante la creazione della finestra
+ERR_FILE_PATH_OPEN = Errore nell'apertura del file dei percorsi
+ERR_RESOURCE_STRING_OPEN = Errore nell'apertura del file delle risorse stringhe
+ERR_RESOURCE_NUMERIC_OPEN = Errore nell'apertura del file delle risorse numeriche
+ERR_BESTEMMS_ENGINE_INIT = Errore durante l'inizializzazione del Bestemms Engine
+ERR_BESTEMMS_FILE_NOT_FOUND = Errore nel caricamento del file delle bestemmie
+ERR_BESTEMMS_PARSING = Errore durante il parsing del file delle bestemmie
+ERR_BESTEMMS_MEMORY_ALLOCATION = Errore nell'allocazione di memoria per le bestemmie
+ERR_BESTEMMS_ENGINE_PARSE_SAINTS = Errore durante il caricamento dei santi
+ERR_BESTEMMS_ENGINE_PARSE_BESTEMMS = Errore durante il caricamento delle bestemmie
+ERR_SAINT_FILE_NOT_FOUND = Errore nel caricamento del file dei santi
+ERR_SAINT_PARSING = Errore durante il parsing del file dei santi
+ERR_SAINT_MEMORY_ALLOCATION = Errore nell'allocazione di memoria per i santi

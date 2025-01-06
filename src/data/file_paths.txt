@@ -1,0 +1,6 @@
+STRING_RESOURCES = data/string_resources.txt
+NUMERIC_RESOURCES = data/numeric_resources.txt
+SAINTS_FILE = data/santi.txt
+BESTEMMS_FILE = data/bestemms.txt
+APP_ICON = img/app_icon.ico
+WINDOW_ICON = img/window_icon.ico
