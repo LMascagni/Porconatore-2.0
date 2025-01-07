@@ -183,7 +183,7 @@ int initBestemmsEngine()
     return EXIT_SUCCESS;
 }
 
-const char *getRandomBestemms()
+const char *getRandomBestemms(int offenseLevel)
 {
     santo saint = getRandomSaint();
 
@@ -191,10 +191,10 @@ const char *getRandomBestemms()
     printf("Santo trovato, nome: %s, genere: %d ->", saint.name, saint.gender);
 #endif
 
-    return buildSimpleBestemms(saint);
+    return buildSimpleBestemms(saint, offenseLevel);
 }
 
-const char *getTodayBestemms()
+const char *getTodayBestemms(int offenseLevel)
 {
     santo saint = getTodaySaint();
 
@@ -202,10 +202,10 @@ const char *getTodayBestemms()
     printf("Santo trovato, nome: %s, genere: %d ->", saint.name, saint.gender);
 #endif
 
-    return buildSimpleBestemms(saint);
+    return buildSimpleBestemms(saint, offenseLevel);
 }
 
-const char *getBestemmsByDate(int month, int day)
+const char *getBestemmsByDate(int month, int day, int offenseLevel)
 {
     const char *result = chkDate(month, day);
     if (result != NULL)
@@ -219,16 +219,16 @@ const char *getBestemmsByDate(int month, int day)
     printf("Santo trovato, nome: %s, genere: %d ->", saint.name, saint.gender);
 #endif
 
-    return buildSimpleBestemms(saint);
+    return buildSimpleBestemms(saint, offenseLevel);
 }
 
-const char *buildSimpleBestemms(santo saint)
+const char *buildSimpleBestemms(santo saint, int offenseLevel)
 {
     char name[MAX_LEN];
 
     //cerca un prefisso e un suffisso con lo stesso genere del santo
-    bestemmia prefix = getRandomTerm(PREFIX, saint.gender);
-    bestemmia suffix = getRandomTerm(SUFFIX, saint.gender);
+    bestemmia prefix = getRandomTerm(PREFIX, saint.gender, offenseLevel);
+    bestemmia suffix = getRandomTerm(SUFFIX, saint.gender, offenseLevel);
 
     //aggiungi San, Santa, Sant' in base al genere del santo
     if (isVowel(saint.name[0]))
@@ -263,10 +263,10 @@ const char *buildSimpleBestemms(santo saint)
     return bestemmia;
 }
 
-bestemmia getRandomTerm(int type, int gender)
+bestemmia getRandomTerm(int type, int gender, int offenseLevel)
 {
     int term = rand() % (type == PREFIX ? prefixCounter : suffixCounter);
-    while (bestemmie[type][term].gender != gender && bestemmie[type][term].gender != MF)
+    while ((bestemmie[type][term].gender != gender && bestemmie[type][term].gender != MF) || bestemmie[type][term].offensiveness > offenseLevel)
     {
         term = rand() % (type == PREFIX ? prefixCounter : suffixCounter);
     }

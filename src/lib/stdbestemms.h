@@ -30,11 +30,11 @@ extern int suffixCounter;
 int initBestemmsEngine();
 void initBestemms();
 int parseAndStoreBestemms(const char *filename);
-const char *getRandomBestemms();
-const char *getTodayBestemms();
-const char *getBestemmsByDate(int month, int day);
-bestemmia getRandomTerm(int type, int gender);
-const char *buildSimpleBestemms(santo saint);
+const char *getRandomBestemms(int offenseLevel);
+const char *getTodayBestemms(int offenseLevel);
+const char *getBestemmsByDate(int month, int day, int offenseLevel);
+bestemmia getRandomTerm(int type, int gender, int offenseLevel);
+const char *buildSimpleBestemms(santo saint, int offenseLevel);
 
 void printAllBestemms();
 

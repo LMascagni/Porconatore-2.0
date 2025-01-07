@@ -123,12 +123,12 @@ HWND CreateMainWindow(HINSTANCE hInstance, int nCmdShow)
     WNDCLASS wc = {0};
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
-    wc.lpszClassName = "MyWindowClass";
+    wc.lpszClassName = "mainWindow";
     RegisterClass(&wc);
 
     HWND hwnd = CreateWindowEx(
         0,
-        "MyWindowClass",
+        "mainWindow",
         GetResourceString("STRING_WINDOW_TITLE"),
         WS_OVERLAPPEDWINDOW, // per rendere le dimensioni fisse & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX,
         CW_USEDEFAULT, CW_USEDEFAULT, GetResourceNumeric("START_WINDOW_WIDTH"), GetResourceNumeric("START_WINDOW_HEIGHT"),
@@ -266,7 +266,7 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
         break;
 
     case ID_BUTTON_RANDOM_SAINT_GENERATE:
-        SetWindowText(controls[CONTROL_LABEL].hwnd, getRandomBestemms());
+        SetWindowText(controls[CONTROL_LABEL].hwnd, getRandomBestemms(GetResourceNumeric("OFFENSIVENESS")));
         break;
 
     case ID_BUTTON_RANDOM_SAINT_CLEAR:
@@ -274,7 +274,7 @@ void HandleCommand(WPARAM wParam, HWND hwnd)
         break;
 
     case ID_BUTTON_SAINT_OF_THE_DAY_GENERATE:
-        SetWindowText(controls[CONTROL_LABEL].hwnd, getTodayBestemms());
+        SetWindowText(controls[CONTROL_LABEL].hwnd, getTodayBestemms(GetResourceNumeric("OFFENSIVENESS")));
         break;
 
     case ID_BUTTON_SAINT_OF_THE_DAY_CLEAR:
@@ -324,7 +324,7 @@ void getBestemmsByDateAux()
         token = strtok(NULL, "/");
         int month = atoi(token);
         // Get the saint
-        const char *saint = getBestemmsByDate(month, day);
+        const char *saint = getBestemmsByDate(month, day, GetResourceNumeric("OFFENSIVENESS"));
 
         // Set the text of the label
         SetWindowText(controls[CONTROL_LABEL].hwnd, saint);
