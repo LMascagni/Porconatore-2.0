@@ -7,7 +7,7 @@
 //parametri di configurazione
 #define MAX_MONTHS 12
 #define MAX_DAYS 31
-#define MAX_LEN 50
+#define MAX_LEN 100
 #define MAX_ITER 400
 
 //definizione costanti

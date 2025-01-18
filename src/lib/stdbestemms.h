@@ -4,7 +4,7 @@
 #include "stdsaint.h"
 
 // parametri di configurazione
-#define MAX_LEN 50
+#define MAX_LEN 100
 #define MAX_TERMS 100
 #define MAX_TYPES 2
 
