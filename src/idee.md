@@ -1,4 +1,5 @@
 # IDEE
+
 - impostazioni
   - temi
   - livelli di offensività (da finire il controllo della presenza di insulti disponibili)
